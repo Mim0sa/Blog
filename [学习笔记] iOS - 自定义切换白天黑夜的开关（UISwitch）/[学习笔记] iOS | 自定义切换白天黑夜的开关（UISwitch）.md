@@ -4,7 +4,7 @@
 
 前段时间在做自己 App 适配 Dark Mode 的时候看到了一个[Procreate的动画教程](https://www.bilibili.com/video/av82589461)以及该视频简介中的灵感来源，觉得还挺有意思的，想着~~复杂的东西我做不出来做个这个总可以吧嘿嘿嘿~~，于是准备仿照风格着手实现一下。下图我实现的效果，左边是白天，右边是黑夜。
 
-![Demo of DNSwitch](demoOfDNSwitch.png)
+![Demo of DNSwitch](resouces/demoOfDNSwitch.png)
 
 ### 调研
 
@@ -34,9 +34,9 @@ var thumbTintColor: UIColor?
 
 原生 UISwitch 的尺寸是 `(width: 51, height: 31)`, 并且虽然 UISwitch 可以通过 `init(frame: CGRect) ` 来初始化但宽度和高度的设置是无效的。
 
-![Content Image](switchImg.png)
+![Content Image](resouces/switchImg.png)
 
-![Layer Detail](On_Layer.png)
+![Layer Detail](resouces/On_Layer.png)
 
 莽的过程是比较简单的，首先是最底下 UIView 的初始化方法和设置圆角和切割：
 
@@ -152,7 +152,7 @@ let dnSwitch = DNSwitch(withSystemSizeOn: position, image: UIImage(named: "switc
 view.addSubview(dnSwitch)
 ```
 
-![Gif Demo](DNSwitchGif.gif)
+![Gif Demo](resouces/DNSwitchGif.gif)
 
 ### 莽完之后
 
@@ -170,7 +170,7 @@ view.addSubview(dnSwitch)
 * 问：你这白天看起来也像黑夜啊？
     * 我觉得像白天啊？不像么？
 
-![可达鸭眉头一皱](可达鸭眉头一皱.jpg)
+![可达鸭眉头一皱](resouces/可达鸭眉头一皱.jpg)
 
 ### 总结一下
 

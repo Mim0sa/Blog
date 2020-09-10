@@ -54,7 +54,7 @@ class ViewControllerC: UIViewController { }
 
 ![CtoA](resouces/CtoA.png)
 
-![CtoA](resouces/Cto.gif)
+![CtoA](resouces/CtoA.gif)
 
 #### 关于 Unwind Segue 的一些思考
 
@@ -91,7 +91,7 @@ extension UIView {
 }
 ```
 
-![cornerRadius](/Users/cm/GitHub_Local/Blog/[学习笔记] iOS | 关于 Storyboard 的一些小技巧/resouces/cornerRadius.png)
+![cornerRadius](resouces/cornerRadius.png)
 
 类似的我们也可以通过配置 `borderWidth` 和 `borderColor` 来实现类似效果。
 
@@ -120,16 +120,16 @@ extension UIView {
 >
 > ```swift
 > extension CALayer {
->    		@IBInspectable var borderUIColor: UIColor {
->      			set { borderColor = newValue.cgColor }
->      			get { return UIColor(cgColor: borderColor ?? UIColor.black.cgColor) }
->    		}
+>    	@IBInspectable var borderUIColor: UIColor {
+>      		set { borderColor = newValue.cgColor }
+>      		get { return UIColor(cgColor: borderColor ?? UIColor.black.cgColor) }
+>    	}
 > }
 > ```
 >
 > ![CALayerInspectable](resouces/CALayerInspectable.png)
 
-以上是 `@IBInspectable` 的一些简单运用，但 `@IBInspectable` 能做的事情远不止如此。给大家举几个例子感受一下：
+以上是 `@IBInspectable` 的一些简单运用，但 `@IBInspectable` 能做的事情远不止如此。这里抛砖引玉给大家举几个例子感受一下：
 
 #### 渐变色背景
 
@@ -141,7 +141,7 @@ extension UIView {
 
 
 
-说到 @IBInspectable 的话也不得不提和他形影不离的 @IBDesignable。
+说到 `@IBInspectable` 的话也不得不提和他形影不离的 `@IBDesignable`。
 
 
 

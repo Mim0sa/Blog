@@ -54,7 +54,7 @@ class ViewControllerC: UIViewController { }
 
 ![CtoA](resouces/CtoA.png)
 
-![CtoA](resouces/CtoA.gif)
+![CtoA](resouces/Ctoa.gif)
 
 #### 关于 Unwind Segue 的一些思考
 
@@ -74,7 +74,7 @@ class ViewControllerC: UIViewController { }
 
 那使用 Unwind Segue 来实现的话，一切看起来就自然很多了，不是么？🍉
 
-### @IBInspectable
+### @IBInspectable 和  @IBDesignable
 
 在 Storyboard 中我们可以直接通过属性检查器面板给控件设置一些常用的属性。但遇到一些棘手的地方，比如设置 layer 的相关属性，就只能通过添加 runtime attributes 来实现。这种实现方式不可复用而且没有代码提示，用起来体验很差。
 
@@ -129,11 +129,91 @@ extension UIView {
 >
 > ![CALayerInspectable](resouces/CALayerInspectable.png)
 
-以上是 `@IBInspectable` 的一些简单运用，但 `@IBInspectable` 能做的事情远不止如此。这里抛砖引玉给大家举几个例子感受一下：
+以上是 `@IBInspectable` 的一些简单运用，但 `@IBInspectable` 能做的事情远不止如此。这里抛砖引玉给大家举两个例子感受一下：
 
 #### 渐变色背景
 
-这次是创建一个子类而不使用 Extension。（因为子类可以有存储属性， Extension 只能有计算属性）
+我们先来看一下一个普通的渐变色背景是如何实现的：
+
+```swift
+override func viewDidLoad() {
+    super.viewDidLoad()
+
+    let gradientLayer = CAGradientLayer()
+    gradientLayer.colors = [UIColor.yellow.cgColor, UIColor.orange.cgColor, UIColor.red.cgColor]
+    gradientLayer.locations = [0.0, 0.4, 1.0]
+
+    gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+    gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+
+    gradientLayer.frame = view.bounds
+    view.layer.insertSublayer(gradientLayer, at: 0)
+}
+```
+
+可以看到要实现渐变色背景我们需要若干个颜色以及对应若干个 location，以及两个 `CGPoint` 类型的坐标来表达渐变的方向，最后是通过生成一个 `CAGradientLayer` 插入当前的视图。根据这些要求，我们可以利用 `@IBInspectable` 来在 `Storyboard` 中设置这些信息，首先我们要新建一个 `UIView` 的子类叫做 `GradientView`，并在类内部声明一些属性和方法，代码中的注释详细描述了各个属性和指令的作用。
+
+> 这里选择新建一个子类而不是使用 Extension 的原因是在实现这个效果时我们需要用到存储属性而 Extension 只能存放计算属性。
+
+```swift
+class GradientView: UIView {
+    // 三个渐变的颜色
+    @IBInspectable var gdColor1: UIColor?
+    @IBInspectable var gdColor2: UIColor?
+    @IBInspectable var gdColor3: UIColor?
+    // 三个渐变颜色的 Location
+    @IBInspectable var gdLocation1: Float = 0
+    @IBInspectable var gdLocation2: Float = 1
+    @IBInspectable var gdLocation3: Float = 1
+    // 控制渐变方向的两个点
+    @IBInspectable var gdStartp: CGPoint = CGPoint(x: 0, y: 0)
+    @IBInspectable var gdEndp: CGPoint = CGPoint(x: 1, y: 0)
+    // 一个 CAGradientLayer 实例
+    var gdLayer = CAGradientLayer()
+    
+    // 配置并添加渐变背景到当前视图上的方法
+    private func makeGradientLayer() {
+        // 如未设置颜色则退出该方法
+        guard let c1 = gdColor1, let c2 = gdColor2, let c3 = gdColor3 else { return }
+        // 因为调用时机是在 layoutSubviews() 上，所以要先将之前添加的背景先移除再生成新的
+        gdLayer.removeFromSuperlayer()
+        // 设置三个渐变颜色及其 Location
+        gdLayer.colors = [c1.cgColor, c2.cgColor, c3.cgColor]
+        gdLayer.locations = [NSNumber(value: gdLocation1),
+                             NSNumber(value: gdLocation2),
+                             NSNumber(value: gdLocation3)]
+        // 设置控制渐变方向的两个点
+        gdLayer.startPoint = gdStartp
+        gdLayer.endPoint = gdEndp
+        // 设置 layer 的尺寸
+        gdLayer.frame = bounds
+        // 添加该 layer 到视图最底层
+        layer.insertSublayer(gdLayer, at: 0)
+    }
+    // 这里把该方法放在 layoutSubviews() 中作为例子，为了表现屏幕旋转后仍运作良好，方便理解。
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // 实际该方法不一定要放在此处（也不应该放在此处）
+        makeGradientLayer()
+    }
+}
+```
+
+写完这些我们再去 `Storyboard` 里，拖一个普通的 `UIView` 到屏幕上，将它的类设置成我们写的 `GradientView`，就可以在属性控制器面板看到这些被 `@IBInspectable` 修饰的属性。并且通过以下简单的设置，你就可以给你的视图配置上带三种颜色的渐变背景。我在这边给 `GradientView` 添加了边距 50 的约束，让我们来旋转看看效果！
+
+![inspectGradient](resouces/inspectGradient.png)
+
+![Rotate](resouces/Rotate.gif)
+
+如果你的 Mac 性能不错，也可以在  `GradientView` 类前加一个 `@IBDesignable`，这样你就可以在 `Storyboard` 中实时看到效果。
+
+```swift
+@IBDesignable class GradientView: UIView { ... }
+```
+
+![ibdesign](resouces/ibdesign.png)
+
+#### Loading 动画
 
 
 
@@ -141,7 +221,21 @@ extension UIView {
 
 
 
-说到 `@IBInspectable` 的话也不得不提和他形影不离的 `@IBDesignable`。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

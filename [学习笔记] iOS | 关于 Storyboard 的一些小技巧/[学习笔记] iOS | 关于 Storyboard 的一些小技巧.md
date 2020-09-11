@@ -120,10 +120,10 @@ extension UIView {
 >
 > ```swift
 > extension CALayer {
->    	@IBInspectable var borderUIColor: UIColor {
->      		set { borderColor = newValue.cgColor }
->      		get { return UIColor(cgColor: borderColor ?? UIColor.black.cgColor) }
->    	}
+>     @IBInspectable var borderUIColor: UIColor {
+>         set { borderColor = newValue.cgColor }
+>         get { return UIColor(cgColor: borderColor ?? UIColor.black.cgColor) }
+>     }
 > }
 > ```
 >
@@ -300,7 +300,7 @@ class LoadingView: UIView {
 
 我现在有一个 `Storyboard ` 文件及其运行效果如下图：
 
-![tabbar](/Users/cm/GitHub_Local/Blog/[学习笔记] iOS | 关于 Storyboard 的一些小技巧/resouces/tabbar.png)
+![tabbar](resouces/tabbar.png)
 
 我现在想要分离第一个 Tab 到别的文件，也就是 1 号页面，我按照方法一操作，选择 Editor -> Refactor to Storyboard -> 选择路径和名字，得到如下效果：
 
@@ -318,9 +318,9 @@ class LoadingView: UIView {
 
 ### 后记
 
-说了这么多，想要告诉大家的是：俗话说得好，一图胜千言，纯代码看起来真的很不享受，也没有那种优雅的感觉，如果你想变成一个优雅的 iOS 开发，知道该怎么做了么？
+说了这么多，想要告诉大家的是：俗话说得好，一图胜千言，纯代码看起来真的很不享受，也没有那种优雅的感觉，如果你想变成一个优雅的 iOS 程序员，知道该怎么做了么？ 
 
-大家快去用 SwiftUI 吧！
+所以大家快去用 SwiftUI 吧！
 
 ![gaoci](../Blog素材库/gaoci.gif)
 

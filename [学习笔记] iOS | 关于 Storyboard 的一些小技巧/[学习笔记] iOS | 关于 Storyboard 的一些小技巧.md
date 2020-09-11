@@ -4,7 +4,7 @@
 
 用了 Storyboard 很久了，在这记录一些使用 Storyboard 时的一些小技巧和小问题。
 
-### Unwind Segue
+### 1. Unwind Segue
 
 在 Storyboard 中，你可以简单地通过 Ctrl + 拖拽 的形式来实现点击一个按钮从页面 A 跳转到另一个指定的页面 B 。当我们要退出页面 B 时，相比使用代码的方式（例如 dismiss、pop ），Storyboard 可以使用 Unwind Segue 来使得我们的操作变得更加优雅🍷。
 
@@ -74,13 +74,13 @@ class ViewControllerC: UIViewController { }
 
 那使用 Unwind Segue 来实现的话，一切看起来就自然很多了，不是么？🍉
 
-### @IBInspectable 和  @IBDesignable
+### 2. @IBInspectable 和  @IBDesignable
 
-在 Storyboard 中我们可以直接通过属性检查器面板给控件设置一些常用的属性。但遇到一些棘手的地方，比如设置 layer 的相关属性，就只能通过添加 runtime attributes 来实现。这种实现方式不可复用而且没有代码提示，用起来体验很差。
+在 `Storyboard` 中我们可以直接通过属性检查器面板给控件设置一些常用的属性。但遇到一些棘手的地方，比如设置 `layer` 的相关属性，就只能通过添加 runtime attributes 来实现。这种实现方式不可复用而且没有代码提示，用起来体验很差。
 
 ![runtimeAttributes](resouces/runtimeAttributes.png) 
 
-但有了  `@IBInspectable` 之后就比较方便了。例如我们可以给 `UIView` 的 Extension 中添加一个属性 `cornerRadius` 来映射 layer 层的 `layer.cornerRadius` 属性。这样我们就能在属性检查器面板直接设置 `UIView` 及其子类的 `layer.cornerRadius` 属性。
+但有了  `@IBInspectable` 之后就比较方便了。例如我们可以给 `UIView` 的 Extension 中添加一个属性 `cornerRadius` 来映射 `layer` 层的 `layer.cornerRadius` 属性。这样我们就能在属性检查器面板直接设置 `UIView` 及其子类的 `layer.cornerRadius` 属性。
 
 ```swift
 extension UIView {
@@ -213,7 +213,116 @@ class GradientView: UIView {
 
 ![ibdesign](resouces/ibdesign.png)
 
-#### Loading 动画
+#### 动画
+
+先给大家看一下效果，在这个例子中可以定制的属性是图片（球）、阴影颜色、弹跳速度、球的弹性以及是否开启动画。
+
+![animation](resouces/animation.gif)
+
+可以看到这其实是9个类似的视图，做法和之前是比较类似的，在这就不详细解释代码了。
+
+```swift
+class LoadingView: UIView {
+    @IBInspectable var image: UIImage?
+    @IBInspectable var shadowColor: UIColor? { didSet { makeViews() } }
+    @IBInspectable var elasticity: CGFloat = 1
+    @IBInspectable var speed: Double = 1
+    @IBInspectable var isAnimating: Bool = true { didSet { if isAnimating { animate() } } }
+    
+    let ballImageView = UIImageView()
+    let ballShadowView = UIView()
+    
+    let contentRatio: CGFloat = 1.8
+    lazy var contentWidth = contentRatio * frame.width > frame.height
+                            ? frame.height / contentRatio
+                            : frame.width
+    lazy var contentHeight = contentRatio * contentWidth
+    
+    func makeViews() {
+        ballShadowView.frame.size = CGSize(width: contentWidth, height: contentWidth / 6)
+        ballShadowView.center = CGPoint(x: frame.width / 2,
+                                        y: frame.height / 2 + contentHeight / 2 - contentWidth / 12)
+        ballShadowView.backgroundColor = shadowColor
+        
+        let pathLayer = CAShapeLayer()
+        pathLayer.path = UIBezierPath(ovalIn: ballShadowView.bounds).cgPath
+        ballShadowView.layer.mask = pathLayer
+        
+        addSubview(ballShadowView)
+        
+        ballImageView.image = image
+        ballImageView.contentMode = .scaleToFill
+        ballImageView.frame.size = CGSize(width: contentWidth, height: contentWidth)
+        ballImageView.center = CGPoint(x: frame.width / 2,
+                                       y: frame.height / 2 - (frame.height / 2 - ballImageView.frame.height / 2))
+        addSubview(ballImageView)
+    }
+    
+    func animate() {
+        UIView.animateKeyframes(withDuration: TimeInterval(speed), delay: 0,
+                                options: .calculationModeCubicPaced, animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: self.speed / 2) {
+                self.ballShadowView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+                                                                 .scaledBy(x: self.elasticity, y: 1)
+                self.ballImageView.transform = CGAffineTransform(translationX: 0, y: self.contentHeight - self.contentWidth)
+                                                                 .scaledBy(x: 1 / self.elasticity, y: self.elasticity)
+            }
+            UIView.addKeyframe(withRelativeStartTime: self.speed / 2, relativeDuration: self.speed / 2) {
+                self.ballShadowView.transform = CGAffineTransform.identity.scaledBy(x: self.elasticity, y: 1)
+                self.ballImageView.transform = CGAffineTransform.identity.scaledBy(x: self.elasticity, y: 1 / self.elasticity)
+            }
+        }) { (finished) in
+            self.animate()
+        }
+    }
+}
+```
+
+>  一个可能让人感觉疑惑的点是：为什么选择了 `shadowColor` 和 `isAnimating` 的 `didSet` 作为我创建视图和启动动画的时机？能保证其他属性一定在该属性之前被赋值吗？答案是：不能。如果你和我一样懒，选择使用某个属性的 `didSet` 作为某些事件发生的时机，且在这个时机你需要其他属性已经被正确赋值，那你需要保证在 `Storyboard` 面板中，那个属性是最后被设置的（或者尽量靠后），换一句话说就是：当你设置完所有属性时，你可以去身份检查器的 runtime attributes 中检查你的那个属性是不是尽量靠后，下图显示了我的 `isAnimating`  属性是相对靠后的。（这个例子中 `shadowColor` 属性靠不靠后无所谓）
+>
+> ![lastAttribute](resouces/lastAttribute.png)
+>
+> 另外，`@IBDesignable` 并不能对动画、Timer等事件作出反应（貌似），所以不要妄想加上 `@IBDesignable` 后能在 `Storyboard` 中看到动画👻。
+>
+> 如果你真的很想弄出动画来，试试SwiftUI吧！🤪
+
+### 3. Storyboard Reference
+
+这个大家应该都知道，为了避免一个超级庞大的 `Storyboard` 文件，我们可以建立若干个 `Storyboard` 文件并用 `Storyboard Reference` 把它们联系起来。有两种方法实现这个效果：
+
+1. 在 `Storyboard` 中选中你要分离的控制器，选择 Editor -> Refactor to Storyboard -> 选择路径和名字，就完成了
+
+2. 从控件库中拖一个 `Storyboard Reference` 出来，并连接上某个控制器，在 `Storyboard Reference` 的属性面板可以设置目标 `Storyboard` 文件的名字，然后目标文件的 `Initial View Controller` 就会成为被展示的控制器。
+
+在这我简单演示一下过程并展示一个我遇到过的问题。
+
+#### 遇到的一个问题
+
+我现在有一个 `Storyboard ` 文件及其运行效果如下图：
+
+![tabbar](/Users/cm/GitHub_Local/Blog/[学习笔记] iOS | 关于 Storyboard 的一些小技巧/resouces/tabbar.png)
+
+我现在想要分离第一个 Tab 到别的文件，也就是 1 号页面，我按照方法一操作，选择 Editor -> Refactor to Storyboard -> 选择路径和名字，得到如下效果：
+
+![tab1](resouces/tab1.png)
+
+现在两部分已经分离了，正常来说这是一个圆满结束，但不知道你有没有注意到 Tabbar 上的图标变了，这时如果你是较低版本的 iOS 系统支持，运行之后也会是这一个蓝色方块，但高版本好像又没有这个问题。我试图选择那个  `Storyboard Reference`，更改他 item 上的图标以及名称，可以更改但没有效果。
+
+![item](resouces/item.png)
+
+#### 解决方案
+
+最后我找的解决办法令人匪夷所思，是在刚刚新建的那个 `Storyboard` 文件中，给那个 tab1 从控件库中自己拖一个 tabbar item 上去装装样子设置一下，就好了诶🥶。
+
+![solution](resouces/solution.png)
+
+### 后记
+
+说了这么多，想要告诉大家的是：俗话说得好，一图胜千言，纯代码看起来真的很不享受，也没有那种优雅的感觉，如果你想变成一个优雅的 iOS 开发，知道该怎么做了么？
+
+大家快去用 SwiftUI 吧！
+
+![gaoci](../Blog素材库/gaoci.gif)
 
 
 

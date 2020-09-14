@@ -316,6 +316,41 @@ class LoadingView: UIView {
 
 ![solution](resouces/solution.png)
 
+### 4.  Container View
+
+这个是我最喜欢的东西了，在 `Storyboard` 中，即使我们通过拖控件上画板的方式减轻了一些 `Controller` 层的压力，但是 `Controller` 层仍然动不动就超过 500 行代码，特别是在一个页面有多个 `UITableView` 或者 `UICollectionView` 的时候。
+
+这时候我们可以通过 Container View 来将一个 `Controller` 分成多个，也就是将多个  `Controller` 包裹在某一个 `Controller` 之中。
+
+实现的方式也很简单，在控件库中找到 Container View，并把它拖到  `Controller` 上即可。(我拖了4个)
+
+![container](resouces/container.png)
+
+![4container](resouces/4container.png)
+
+经过这样的处理，我们就不用在一个控制器中处理多个复杂控件了。但要注意的是，这些子控制器的初始化方式是不能通过依赖注入来实现的，而是通股票经典的 `Storyboard` 做法：通过 segue 来实现。具体做法是，通过设置每个 segue 不同的的 `identifier`，在父控制器的 `func prepare(for segue: UIStoryboardSegue, sender: Any?)` 中识别不同的的 `identifier` 来确定不同的子控制器。
+
+![segueForContainer](resouces/segueForContainer.png)
+
+```swift
+override func prepare(for segue: UIStoryboardSegue, sender: Any?) { guard
+    let identifier = segue.identifier else { return }
+    if identifier == "segueA" { guard
+        let vc_a = segue.destination as? VC_A else { fatalError() }
+        vc_a.model = info
+    } else if identifier == "segueB" { guard
+        let vc_b = segue.destination as? VC_B else { fatalError() }
+        vc_b.model = info
+    } else if identifier == "segueC" { guard
+        let vc_c = segue.destination as? VC_C else { fatalError() }
+        vc_c.model = info
+    } else if identifier == "segueD" { guard
+        let vc_d = segue.destination as? VC_D else { fatalError() }
+        vc_d.model = info
+    }
+}
+```
+
 ### 后记
 
 说了这么多，想要告诉大家的是：俗话说得好，一图胜千言，纯代码看起来真的很不享受，也没有那种优雅的感觉，如果你想变成一个优雅的 iOS 程序员，知道该怎么做了么？ 

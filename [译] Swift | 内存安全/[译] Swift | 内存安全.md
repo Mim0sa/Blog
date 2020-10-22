@@ -92,6 +92,18 @@ increment(&stepSize)
 
 ![memory_increment](resources/memory_increment.png)
 
+解决这种冲突的一个办法是显式复制 `stepSize`：
+
+```swift
+// Make an explicit copy.
+var copyOfStepSize = stepSize
+increment(&copyOfStepSize)
+
+// Update the original.
+stepSize = copyOfStepSize
+// stepSize is now 2
+```
+
 
 
 

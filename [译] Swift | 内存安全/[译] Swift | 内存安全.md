@@ -73,6 +73,27 @@ print(myNumber)
 
 ## In-Out 参数的访问冲突
 
+一个函数对其所有 in-out 参数具有长期写入访问（long-term write access）的能力。In-out 参数的写入访问是等所有非 in-out 参数被评估(?)之后才开始，并且将持续该函数调用的整个过程。如果有多个 in-out 参数，则写入访问的开始顺序与参数出现的顺序相同。
+
+使用这种长期写入访问的一个后果是，你不可以访问以 in-out 形式传递的原始变量（即使从范围规则和访问控制的角度来说这样是允许的），任何对原始变量的访问都会导致冲突的发生。下面举个例子：
+
+```swift
+var stepSize = 1
+
+func increment(_ number: inout Int) {
+    number += stepSize
+}
+
+increment(&stepSize)
+// Error: conflicting accesses to stepSize
+```
+
+在上面的代码中，`stepSize` 是一个全局变量，正常来说我们可以在 `increment(_:)` 内访问他。然而，对 `stepSize` 的读取访问和对 `number` 的写入访问重叠了。如下图所示，`number` 和 `stepSize` 都指向内存中的同一位置， 读取和写入访问引用相同的内存，并且它们重叠，从而产生了冲突。
+
+![memory_increment](resources/memory_increment.png)
+
+
+
 
 
 

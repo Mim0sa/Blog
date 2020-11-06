@@ -5,3 +5,10 @@
 ![Response Chain](resources/Response Chain.png)
 
 <!--more-->
+
+## 响应者
+
+iOS 使用响应者对象接收和处理事件。一个响应者对象可以是 `UIResponder` 类的任何实例，常见的子类包括 `UIView`，`UIViewController` 和 `UIApplication`。这意味着几乎所有我们日常使用的控件都是一个响应者。
+
+![Responders](resources/Responders.png)
+

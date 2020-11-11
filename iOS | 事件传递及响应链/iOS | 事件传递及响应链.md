@@ -27,22 +27,70 @@ open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?)
 
 ## 确定第一响应者
 
-回到开始的问题，假如你是一台手机📱，在有人用触摸了屏幕之后，我们需要找到使用者到底触摸了一个什么东西，或者可以理解为我们要找到，在这次使用者触摸之后，使用者最想要哪个控件发起响应。这个过程就是确定这次触摸事件的第一响应者是谁。
+当有人用触摸了屏幕之后，我们需要找到使用者到底触摸了一个什么东西，或者可以理解为我们要找到，在这次使用者触摸之后，使用者最想要哪个控件发起响应。这个过程就是确定这次触摸事件的第一响应者是谁。
 
-在触摸发生后，`UIApplication` 会触发 `open func sendEvent(_ event: UIEvent)` 将一个封装好的 `UIEvent` 传给 `UIWindow`，也就是当前展示的 `UIWindow`，通常情况接下来会传给当前展示的 `UIViewController`，接下来传给 `UIViewController` 的根视图。这个过程是一条龙服务，没有分叉。但是在传递给当前 `UIViewController` 的根视图之后，视图的层级结构就可以变得复杂起来了。
+在触摸发生后，`UIApplication` 会触发 `func sendEvent(_ event: UIEvent)` 将一个封装好的 `UIEvent` 传给 `UIWindow`，也就是当前展示的 `UIWindow`，通常情况接下来会传给当前展示的 `UIViewController`，接下来传给 `UIViewController` 的根视图。这个过程是一条龙服务，没有分叉。但是在传递给当前 `UIViewController` 的根视图之后，就是开发人员的主战场，视图的层级结构就可以变得错综复杂起来了。
+
+> 这里我们使用 `UIView` 来作为视图层级的主要组成元素，便于理解。但不止 `UIView` 可以响应事件，实际只要是 `UIResponder` 的子类，都可以响应和传递事件。后文会大量用 `视图` 或 `UIView` 来举例，实则代指一切合格的响应者。
 
 ![UIApplication to rootView](resources/UIApplication to rootView.png)
 
-好我现在变成了一台手机📱，我知道有人触摸了屏幕，假设我也知道触摸的点的坐标，但我无法直接知道用户是想点 A B C D E 中的哪个视图，但我知道应该就是其中的某一个（不然就是一个需要被丢弃的事件）。我需要一个策略来找到第一响应者，UIKit 为我们提供了命中测试（*hit-testing*）来确定触摸事件的响应者，这个策略具体是：
+回到开头的问题，我现在变成了一台手机📱，并且我知道有人触摸了屏幕。我所有的信息是触摸点的坐标，我无法直接知道用户是想点哪个视图，但我知道应该就是视图层级中其中的某一个。我需要一个策略来找到第一响应者，UIKit 为我们提供了命中测试（*hit-testing*）来确定触摸事件的响应者，这个策略具体是：
 
 ![Hit-testing](resources/Hit-testing.png)
 
-下面我们举个例子，下图中灰色视图 A 可以看作是当前 `UIViewController` 的根视图，右侧表示了各个视图的层级结构。⚠️并且注意，我们可以看到，D 比 B 晚添加到 A 上。
+关于图中还有一些细节需要先说明：
+
+* 在 `检查自身可否接收事件` 中，如果视图符合以下三个条件中的任一个，都会无法接收事件：
+  1. `view.isUserInteractionEnabled = false` 
+  2. `view.alpha <= 0.01` 
+  3. `view.isHidden = true` 
+* `检查坐标是否在自身内部` 这个过程使用了 `func point(inside point: CGPoint, with event: UIEvent?) -> Bool` 方法来判断坐标是否在自身内部，该方法是可以被重写的。
+* `从后往前遍历子视图重复执行` 指的是按照 `FILO` 的原则，将其所有子视图按照「后添加的先遍历」的规则进行命中测试。该规则保证了系统会优先测试视图层级树中最后添加的视图，如果视图之间有重叠，该视图也是同级视图中展示最完整的视图，即用户最可能想要点的那个视图。
+
+下面我们举个例子来解释这个流程，在例子中我们从当前 `UIViewController` 的根视图开始执行这个流程。下图中灰色视图 A 可以看作是当前 `UIViewController` 的根视图，右侧表示了各个视图的层级结构，用户在屏幕上的触摸点是🌟处，并且这5个视图都可以正常的接收事件。⚠️并且注意，D 比 B 更晚添加到 A 上。
 
 ![Find the first responder](resources/Find the first responder.png)
 
+具体的流程如下：
 
-## 通过响应者链传递事件
+* 首先对 A 进行命中测试，显然🌟是在 A 内部的，按照流程接下来检查 A 是否有子视图。
+* 我们发现 A 有两个子视图，那我们就需要按 `FILO` 原则遍历子视图，先对 D 进行命中测试，后对 B 进行命中测试。
+* 我们对 D 进行命中测试，我们发现🌟不在 D 的内部，那就说明 D 及其子视图一定不是第一响应者。
+* 按顺序接下来对 B 进行命中测试，我们发现🌟在 B 的内部，按照流程接下来检查 B 是否有子视图。
+* 我们发现 B 有一个子视图 C，所以需要对 C 进行命中测试。
+* 显然🌟不在 C 的内部，这时我们得到的信息是：触摸点在 B 的内部，但不在 B 的任一子视图内。
+* 得到结论：B 是第一响应者，并且结束命中测试。
+* 整个命中测试的走向是这样的：A✅ --> D❎ --> B✅ --> C❎ >>>> ***B***
+
+整个流程应该算是清晰明了🐶，实际上这个流程就是 `UIView` 的一个方法：`func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?`，方法最后返回的 `UIView?` 即第一响应者，这个方法代码还原应该是这样的：
+
+```swift
+class HitTestExampleView: UIView {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if !isUserInteractionEnabled || isHidden || alpha <= 0.01 {
+            return nil // 此处指视图无法接受事件
+        }
+        if self.point(inside: point, with: event) { // 判断触摸点是否在自身内部
+            for subview in subviews.reversed() { // 按 FILO 遍历子视图
+                let convertedPoint = subview.convert(point, from: self)
+                let resultView = subview.hitTest(convertedPoint, with: event) 
+                // ⬆️这句是判断触摸点是否在子视图内部，在就返回视图，不在就返回nil
+                if resultView != nil { return resultView }
+            }
+            return self // 此处指该视图的所有子视图都不符合要求，而触摸点又在该视图自身内部
+        }
+        return nil // 此处指触摸点是否不在该视图内部
+    }
+}
+```
+
+> 针对这个流程举个额外的例子，如果按下图的视图层级和触摸点来判断的话，最终获得第一响应者仍然是 B，甚至整个命中测试的走向和之前是一样的：A✅ --> D❎ --> B✅ --> C❎ >>>> ***B***，究其原因是在 D 检查触摸点是否在自身内部时，答案是否，所以不会去对 E 进行命中测试，即使看起来我们点了 E。
+>
+> ![Find the first responder 2](resources/Find the first responder 2.png)
+
+
+## 通过响应链传递事件
 
 ## 手势的优先级
 

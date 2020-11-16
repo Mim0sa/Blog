@@ -8,7 +8,7 @@
 
 ### 调研
 
-我先看了一下原生的UISwitch的功能，大致是这样的：
+我先看了一下原生的 `UISwitch` 的功能，大致是这样的：
 
 ```Swift
 var isOn: Bool
@@ -24,15 +24,15 @@ var thumbTintColor: UIColor?
 // The color used to tint the appearance of the thumb.
 ```
 
-后两个属性对应的是 UISwitch 在 On 状态下的背景颜色和 UISwitch 中间的圆形机关颜色，那在我的这个控件里没有这个需求，所以我就不开放这两个属性了。
+后两个属性对应的是 `UISwitch` 在 On 状态下的背景颜色和 `UISwitch` 中间的圆形机关颜色，那在我的这个控件里没有这个需求，所以我就不开放这两个属性了。
 
 `setOn(Bool, animated: Bool)` 这个方法可以更改当前 UISwitch 的开关状态，并且可以输入 `animated` 参数来决定做不做动画。获取 `isOn` 这个属性可以获得是 UISwitch 当前的开关状态，更改这个属性会执行一次类似没有动画的 `setOn(Bool, animated: Bool)` 方法。
 
 ### 开始莽
 
-开始写代码的时候，我~~不假思索的~~选择了 UIView 和 UIImageView 来作为实现方式。我的想法是通过放置一张大约两倍标准 UISwitch 宽度的长图，和通过设置 `clipsToBounds = true` 来完成图片的部分滑动。
+开始写代码的时候，我~~不假思索的~~选择了 `UIView` 和 `UIImageView` 来作为实现方式。我的想法是通过放置一张大约两倍标准 `UISwitch` 宽度的长图，和通过设置 `clipsToBounds = true` 来完成图片的部分滑动。
 
-原生 UISwitch 的尺寸是 `(width: 51, height: 31)`, 并且虽然 UISwitch 可以通过 `init(frame: CGRect) ` 来初始化但宽度和高度的设置是无效的。
+原生 UISwitch 的尺寸是 `(width: 51, height: 31)`，并且虽然 UISwitch 可以通过 `init(frame: CGRect) ` 来初始化但宽度和高度的设置是无效的。
 
 ![Content Image](resouces/switchImg.png)
 
@@ -62,7 +62,7 @@ extension DNSwitch {
 }
 ```
 
-接下来是通过传入的 UIImage 来创建合适的 UIImageView，因为怕传进来的图片比开关本身还要小，所以做了个判断。另外我这里是在初始化时就传入了图片，所以这个函数就只触发一次。如果把 image 做成开关的一个属性，在初始化之后可以自己选择时机传入图片的话，也可以把这个方法改写成一个 `updateImage(image: UIImage)` 的更新 image 的方法，就是要注意在 update 的时候当前开关的状态是 On 还是 Off。
+接下来是通过传入的 `UIImage` 来创建合适的 `UIImageView`，因为怕传进来的图片比开关本身还要小，所以做了个判断。另外我这里是在初始化时就传入了图片，所以这个函数就只触发一次。如果把 image 做成开关的一个属性，在初始化之后可以自己选择时机传入图片的话，也可以把这个方法改写成一个 `updateImage(image: UIImage)` 的更新 image 的方法，就是要注意在 update 的时候当前开关的状态是 On 还是 Off。
 
 ```Swift
 private func configureImageView(image: UIImage) {
@@ -159,12 +159,12 @@ view.addSubview(dnSwitch)
 看到这里你可能有一肚子疑惑，比如：
 
 * 问：你这个开关为什么不用 `UIControl` 来实现，而是用 `UIView` + `UITapGestureRecognizer` 来实现？
-    * ~~盲生，你发现了华点~~，是我的锅，我写到这才意识到事情的不对劲，~~但是不想再弄了~~。
+    * ~~盲生，你发现了华点~~，是我的锅，我写到这才意识到事情的不对劲，~~但是不想再改了~~。
     * `UIControl` 有 `addTarget(Any?, action: Selector, for: UIControl.Event)` 以及 ` sendAction(Selector, to: Any?, for: UIEvent?)` 方法也能很好的处理这类情况。
 * 问：为什么你是用一张长图，而不是两张各自风格的图？
     * 是这样，我本以为两张各自风格的图会显得很突兀，但实际上由于圆形白色机关的存在会挡住一大部分图，所以使用两张各自风格的图效果应该也不错，并且可控制的范围也会更大一些。
 * 问：原生的能加阴影，你设置了 `clipsToBounds = true` ，那你要加阴影不就麻烦了？
-    * 对的，所以我没加阴影。
+    * 嘘🤫。
 * 问：你为什么叫他白色机关？
     * 叫按钮不合适，我不知道该叫他什么。
 * 问：你这白天看起来也像黑夜啊？
@@ -176,7 +176,6 @@ view.addSubview(dnSwitch)
 
 * 前期的调研非常不到位。
 * 再做这种触碰式的控件不用 `UIControl` 我就是🐶。
-* 水水的。
 
 其实做这个 Demo 只花了 1 小时，写这篇笔记花了大半天，主要的目的还是希望自己能够养成记录的习惯，所以才没有把这篇水文砍掉😁。
 

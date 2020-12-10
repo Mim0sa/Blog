@@ -66,7 +66,16 @@ touchesCancelled // 手势识别成功，touches 系列方法被阻断
 
 从图中我们可以看到，当不带手势的情况下，手指按下去的时候，响应者的 `touchBegan` 方法会触发，随着手指的移动，`touchMoved` 会不断触发，当手指结束移动并抬起来的时候，`touchEnded` 会触发。在这个过程中，我们接收到一直是一个不断更新的 `UITouch`。
 
-在有该视图有添加一个 `UIPanGestureRecognizer` 手势的情况下，可以看到手势识别系统是在手指按下去那一刻就开始工作的，是处于一直在识别的状态。在我们拖动了很小一段距离之后（注意这时候我们的手指还没抬起）， 手势识别系统确定了该 `UITouch` 所做的动作是符合 `UIPanGestureRecognizer` 的特点的，于是给该视图发送了 `touchCancelled` 的信息，从而阻止这个 `UITouch` 继续调用这个视图的 touches 系列方法（同时也取消了别的相关手势，图中未体现）。在这之后，被调用的只有与手势关联的 target-action 方法（也就是图中的墨绿色节点 `call PanFunction`）。
+在该视图有添加一个 `UIPanGestureRecognizer` 手势的情况下，我们多了下方这一条来表示与响应链同时工作的手势识别系统，可以看到手势识别系统也是在手指按下去那一刻就开始工作的，前半段处于一直正在识别的状态。在我们拖动了很小一段距离之后（注意这时候我们的手指还没抬起）， 手势识别系统确定了该 `UITouch` 所做的动作是符合 `UIPanGestureRecognizer` 的特点的，于是给该视图的响应链发送了 `touchCancelled` 的信息，从而阻止这个 `UITouch` 继续触发这个视图的 touches 系列方法（同时也取消了别的相关手势的 touches 系列方法，图中未体现）。在这之后，被调用的只有与手势关联的 target-action 方法（也就是图中的墨绿色节点 `call PanFunction`）。
+
+##### 再进一步
+
+为了图片的美观和易读，在图片中我隐去了不少细节：
+
+1. 手势在图中 `recognizing` 的节点处都处于 `.possible` 状态
+2. 手势识别器不是响应者，但也有 touches 系列方法，比响应链的 touches 方法更早那么一点触发（从图中也可以看出，手势那条线上的每个节点都稍靠左一些）
+3. 手势在图中 `recognizing` 的节点处也可以看做手势识别器的 touches 方法触发
+4. 
 
 
 

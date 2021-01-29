@@ -141,6 +141,48 @@ print(opaqueJoinedTriangles.draw())
 // *
 ```
 
+在这个例子中，`opaqueJoinedTriangles` 的值与本章前面「非透明类型解决了什么？」一节中的泛型例子的 `joinTriangles` 相同。然而，与那个示例中的不同的是，`flip(_:)` 和 `join(_:_:)` 将泛型操作返回的底层类型包裹在一个不透明的返回类型中，这就防止了这些类型的可见。这两个函数都是范用的，因为它们所依赖的类型是范型，函数的类型参数传递了 `FlippedShape` 和 `JoinShape` 所需要的类型信息。
+
+如果一个具有非透明返回类型的函数从多个地方返回，所有可能的返回值必须具有相同的类型。对于一个范用函数，该返回类型可以使用函数的范型参数，但它仍然必须是单一具体类型。例如，这里是一个无效版本的形状翻转函数，它包含了一个翻转正方形的特殊情况：
+
+```swift
+func invalidFlip<T: Shape>(_ shape: T) -> some Shape {
+    if shape is Square {
+        return shape // Error: return types don't match
+    }
+    return FlippedShape(shape: shape) // Error: return types don't match
+}
+```
+
+如果你用一个 `Square` 调用这个函数，它就返回一个 `Square`，否则，它就返回一个 `FlippedShape`。这违反了只返回一种类型的值的要求，并使 `invalidFlip(_:)` 成为无效代码。修正 `invalidFlip(_:)` 的一个方法是将正方形的特殊情况移到 `FlippedShape` 的实现中，让这个函数总是返回一个 `FlippedShape` 值：
+
+```swift
+struct FlippedShape<T: Shape>: Shape {
+    var shape: T
+    func draw() -> String {
+        if shape is Square {
+            return shape.draw()
+        }
+        let lines = shape.draw().split(separator: "\n")
+        return lines.reversed().joined(separator: "\n")
+    }
+}
+```
+
+始终返回单一类型的要求并不妨碍你在非透明的返回类型中使用泛型。下面是一个函数的例子，它将其类型参数融入到返回值的基础类型中。
+
+```swift
+func `repeat`<T: Shape>(shape: T, count: Int) -> some Collection {
+    return Array<T>(repeating: shape, count: count)
+}
+```
+
+在这种情况下，返回值的底层类型因 `T` 而异：无论传递给它什么形状，`repeat(shape:count:)` 都会创建并返回该形状的数组。尽管如此，返回值总是具有相同的底层类型 `[T]`，因此它遵循了具有非透明返回类型的函数必须只返回单一类型的值的要求。
+
+
+
+## 非透明类型和协议的区别
+
 
 
 

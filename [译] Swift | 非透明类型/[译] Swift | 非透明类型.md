@@ -1,10 +1,10 @@
 # [译] Swift | 非透明类型
 
-具有非透明返回类型的方法或者函数可以隐藏它返回值的类型信息，相较于提供一个确切的类型作为函数，它是提供一个所支持的协议来描述其返回类型。隐藏类型信息这个操作在模块和调用模块的代码之间的边界处很有用，因为返回值的基础类型可以保持私有。与返回一个协议类型不同的是，不透明类型可以保留类型标识--这样编译器可以访问类型信息，但模块的客户端不能访问。
+具有非透明返回类型的方法或者函数可以隐藏它返回值的类型信息，相较于提供一个确切的类型作为函数，它是提供一个所支持的协议来描述其返回类型。隐藏类型信息这个操作在模块和调用模块的代码之间的边界处很有用，因为返回值的基础类型可以保持私有。与返回一个协议类型不同的是，不透明类型可以保留类型标识--这样编译器可以访问类型信息，但模块的调用者不能访问。
 
 <!--more-->
 
-> 本文译自 [Swift 官方文档](https://docs.swift.org/swift-book/LanguageGuide/OpaqueTypes.html)，解答了我在 SwiftUI 中遇到的 `some View` 时产生的疑惑，并阐述了非透明类型与范型、协议的联系和区别。
+> 本文译自 [Swift 官方文档](https://docs.swift.org/swift-book/LanguageGuide/OpaqueTypes.html)，解答了我在 SwiftUI 中遇到的 `some View` 时产生的疑惑，谈了协议在某些方面的短板及非透明类型的长处，阐述了非透明类型与范型、协议的联系和区别。
 
 
 
@@ -182,6 +182,95 @@ func `repeat`<T: Shape>(shape: T, count: Int) -> some Collection {
 
 
 ## 非透明类型和协议的区别
+
+返回一个非透明类型与使用协议类型作为函数的返回类型看起来非常相似，但这两种返回类型在是否保留类型标识方面有所不同。一个不透明类型指的是一种特定的类型，尽管函数的调用者无法看到是哪种类型；协议类型指任何符合协议的类型。简单来说，协议类型让你对它们存储的值的底层类型有更多的灵活性，而不透明类型让你对这些底层类型需要做出更强的保证。
+
+例如，这里有一个使用协议类型作为返回类型而不是非透明类型的 `flip(_:)` 方法：
+
+```swift
+func protoFlip<T: Shape>(_ shape: T) -> Shape {
+    return FlippedShape(shape: shape)
+}
+```
+
+这个版本的 `protoFlip(_:)` 与 `flip(_:)` 的函数体是相同的，且它总是返回一个相同类型的值。与 `flip(_:)` 不同的是，`protoFlip(_:)` 返回的值不需要总是具有相同的类型--它只需要符合 `Shape` 协议。换句话说，`protoFlip(_:)` 与调用者签订的 API 要求要比 `flip(_:)` 宽松得多，它保留了返回多种类型值的灵活性：
+
+```swift
+func protoFlip<T: Shape>(_ shape: T) -> Shape {
+    if shape is Square {
+        return shape
+    }
+
+    return FlippedShape(shape: shape)
+}
+```
+
+修改后的代码版本会返回一个 `Square` 的实例或 `FlippedShape` 的实例，这取决于传递进来的形状。该函数返回的两个翻转形状可能具有完全不同的类型，当翻转多个相同形状的实例时，该函数的其他有效版本可能返回不同类型的值。`protoFlip(_:)` 的返回类型信息不那么具体，这意味着许多依赖于类型信息的操作在返回值上是不可用的。例如，不可能写一个 `==` 操作符来比较这个函数返回的结果。
+
+```swift
+let protoFlippedTriangle = protoFlip(smallTriangle)
+let sameThing = protoFlip(smallTriangle)
+protoFlippedTriangle == sameThing  // Error
+```
+
+示例最后一行错误的发生有几个原因，最直接的问题是 `Shape` 没有把 `==` 操作符作为协议要求的一部分，如果你试着添加，下一个问题是 `==` 操作符需要知道它的左手和右手参数的类型，这类操作符通常会接受类型为 `Self` 的参数，为了与采用协议的任何具体类型相匹配，但在协议中添加一个 `Self` 要求也不允许在你将协议作为类型使用时发生类型擦除。
+
+使用协议类型作为函数的返回类型，可以灵活地返回任何符合协议的类型。然而，这种灵活性的代价是，有些操作在返回值上是不可能的。这个例子显示了 `==` 操作符是如何不可用的--它依赖于特定的类型信息，而这些信息并没有通过使用协议类型来保存。
+
+这种方法的另一个问题是，形状变换不能嵌套。翻转三角形的结果是一个 `Shape` 类型的值，`protoFlip(_:)` 函数接受一个符合 `Shape` 协议的某个类型的参数。然而，一个协议类型的值并不符合该协议，`protoFlip(_:)` 返回的值并不符合 `Shape` 协议。这意味着像 `protoFlip(protoFlip(smallTriange))` 这样应用多次变换的代码是无效的，因为被翻转的形状不是 `protoFlip(_:)` 的有效参数。
+
+相反，非透明类型会保留底层类型的标识。Swift可以推断关联类型，这让你可以在协议类型不适用的地方使用非透明类型作为返回值。例如，这是一个来自 [Generics](https://docs.swift.org/swift-book/LanguageGuide/Generics.html) 的 `Container` 协议：
+
+```swift
+protocol Container {
+    associatedtype Item
+    var count: Int { get }
+    subscript(i: Int) -> Item { get }
+}
+extension Array: Container { }
+```
+
+你不能使用Container作为函数的返回类型，因为该协议有一个关联类型，你也不能在一个范型返回类型中使用它作为约束，因为在函数体之外没有足够的信息来推断范型需要是什么。
+
+```swift
+// Error: Protocol with associated types can't be used as a return type.
+func makeProtocolContainer<T>(item: T) -> Container {
+    return [item]
+}
+
+// Error: Not enough information to infer C.
+func makeProtocolContainer<T, C: Container>(item: T) -> C {
+    return [item]
+}
+```
+
+而使用非透明类型 `some Container` 作为返回类型，表达了所需的 API 要求--函数返回一个 `Container`，但拒绝指定 `Container` 的类型：
+
+```swift
+func makeOpaqueContainer<T>(item: T) -> some Container {
+    return [item]
+}
+let opaqueContainer = makeOpaqueContainer(item: 12)
+let twelve = opaqueContainer[0]
+print(type(of: twelve))
+// Prints "Int"
+```
+
+`twelve` 的类型被推断为 `Int`，这说明了类型推断对不透明类型有效。在 `makeOpaqueContainer(item:)` 的实现中，不透明容器的底层类型是 `[T]`。在这种情况下，`T` 是 `Int`，所以返回值是一个整数数组，`Item` 关联类型被推断为 `Int`。`Container` 上的下标返回 `Item`，也就是说，`twelve` 的类型也被推断为 `Int`。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

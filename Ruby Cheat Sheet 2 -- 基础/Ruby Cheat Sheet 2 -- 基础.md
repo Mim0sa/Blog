@@ -176,9 +176,181 @@ break next redo
 
 ### 「7」方法
 
+按接收者的种类不同，Ruby 的方法可以分为三类：
 
+* 实例方法
+* 类方法
+* 函数式方法
 
+>  调用类方法时，可以使用 `::` 代替 `.`
 
+```ruby
+def hello(name)
+  puts "Hello, #{name}"
+end
+```
+
+定义带块的方法：
+
+```ruby
+def myLoop
+  while true
+    yield
+  end
+end
+
+num = 1
+myLoop do 
+  puts "num is #{num}"
+  break if num > 10
+  num *= 2
+end
+```
+
+带关键字参数的方法：
+
+ ```ruby
+def meth(x: 0, y: 0, z: 0, **args)
+  [x, y, z, args]
+end
+
+p meth(x: 3, y: 4, z: 5, v: 6, w: 7)
+#=> [3, 4, 5, {:v=>6, :w=>7}]
+ ```
+
+### 「8」类和模块
+
+判断某个对象是否属于某个类时：
+
+```ruby
+ary = []
+p ary.instance_of?(String)
+#=> false
+p ary.is_a?(Object)
+#=> true
+```
+
+创建一个类：
+
+```ruby
+class HelloWorld
+  def initialize(myname = "Ruby")
+    @name = myname
+  end
+  
+  def hello
+    puts "Hello, world. I am #{@name}."
+  end
+end
+
+bob = HelloWorld.new("Bob")
+ruby = HelloWorld.new("Alice")
+bob.hello
+```
+
+Ruby 中的存取器：
+
+```ruby
+def name
+  @name
+end
+
+def name=(value)
+    @name = value
+end
+```
+
+为了方便，我们可以用以下来代替存取方法的实现：
+
+| 定义                | 意义                     |
+| :------------------ | :----------------------- |
+| attr_reader :name   | 只读（定义 name 方法）   |
+| attr_writer :name   | 只写（定义 name= 方法）  |
+| attr_accessor :name | 读写（定义以上两个方法） |
+
+```ruby
+class HelloWorld
+  attr_accessor :name
+end
+```
+
+类方法：
+
+```ruby
+class << HelloWorld
+  def hello(name)
+    puts "#{name} said hello."
+  end
+end
+# 单例类定义
+HelloWorld.hello("John") #=> John said hello.
+
+# 也可以这样写
+class HelloWorld
+  class << self
+    def hello(name)
+      puts "#{name} said hello."
+    end
+  end
+end
+
+# 或这样
+def HelloWorld.hello(name)
+  puts "#{name} said hello."
+end
+
+# 或这样
+class HelloWorld
+  def self.hello(name)
+    puts "#{name} said hello."
+  end
+end
+```
+
+类中的常量：
+
+```ruby
+class Hello
+  Version = "1.0"
+end
+
+p Hello::Version  #=> "1.0"
+```
+
+类变量：
+
+```ruby
+class HelloCount
+  @@count = 0
+  
+  def HelloCount.count
+    @@count
+  end
+  
+  def initialize(myname = "Ruby")
+    @name = myname
+  end
+  
+  def hello
+    @@count += 1
+    puts "Hello, world. I am #{@name}."
+  end
+end
+
+p HelloCount.count           #=> 0
+bob = HelloCount.new("Bob")
+ruby = HelloCount.new()
+bob.hello
+ruby.hello
+p HelloCount.count           #=> 2
+```
+
+ 限制方法的调用：
+
+```ruby
+public private protected
+# private 和 protected 的区别很有意思
+```
 
 
 

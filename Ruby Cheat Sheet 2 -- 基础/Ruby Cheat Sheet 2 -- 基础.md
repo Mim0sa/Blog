@@ -350,7 +350,81 @@ p HelloCount.count           #=> 2
 ```ruby
 public private protected
 # private 和 protected 的区别很有意思
+# 于书 P45 有解释
 ```
+
+在原有类的基础上添加方法：
+
+```ruby
+class String
+  def count_word
+    ary = self.split(\/s+/)
+    return ary.size
+  end
+end
+
+str = "Just Ruby"
+p str.count_word  #=> 2
+```
+
+继承一个类：
+
+```ruby
+class RingArray < Array
+  def [](i)
+    idx = i % size
+    super(idx)
+  end
+end
+
+wday = RingArray["m", "i", "m", "0", "s", "a"]
+p wday[6]  #=> "m"
+```
+
+> 在 Ruby 中如果你不明确的指定父类，那么将会默认以 Object 作为父类，Object 类提供了许多便于编程的方法。但是如果你还想要更加轻量级的类，你可以直接继承 BasicObject 类。
+
+alias 和 undef 的运用：
+
+```ruby
+class C1
+  def hello
+    "Hello"
+  end
+end
+
+class C2 < C1
+  alias old_hello hello
+  def hello
+    "#{old_hello}, again"
+  end
+end
+
+obj = C2.new
+p obj.old_hello
+p obj.hello.     #=> "Hello, again"
+```
+
+通过利用单例类定义，给对象添加单例方法：
+
+```ruby
+str1 = "Ruby"
+str2 = "Ruby"
+class << str1
+  def hello
+    "Hello, #{self}!"
+  end
+end
+p str1.hello #=> "Hello, Ruby!"
+p str2.hello #=> Error(NoMethodError)
+```
+
+模块
+
+
+
+
+
+
 
 
 

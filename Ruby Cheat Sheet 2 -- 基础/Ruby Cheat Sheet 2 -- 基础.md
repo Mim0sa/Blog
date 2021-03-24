@@ -418,7 +418,30 @@ p str1.hello #=> "Hello, Ruby!"
 p str2.hello #=> Error(NoMethodError)
 ```
 
-模块
+模块，模块是什么？模块是 Ruby 的特色功能之一。如果说类是表示事物的实体及其行为的话，那么模块的表现就只是事物的行为。模块有以下特点：
+
+* 模块不能拥有实例
+* 模块不能被继承
+
+利用 Mix-in 扩展功能：
+
+```ruby
+module MyModule
+  # methods
+end
+
+class MyClass1
+  include MyModule
+  # methods
+end
+
+class MyClass2
+  include MyModule
+  # methods
+end
+```
+
+
 
 
 

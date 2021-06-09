@@ -6,7 +6,7 @@
 
 <!--more-->
 
-> 一个要注意的点是：我给 MacBook Air 升级的是 SSD 硬盘，但给 Mac mini 升级的是内存 RAM。不一样的哈。
+> 注意：我给 MacBook Air 升级的是 SSD 硬盘，但给 Mac mini 升级的是内存 RAM。不一样的哈。
 
 ## 准备工作
 

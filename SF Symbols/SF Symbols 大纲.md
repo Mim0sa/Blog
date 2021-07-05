@@ -7,9 +7,9 @@
 
 ## 如何使用 SF Symbols
 
-> 所有示例都有 UIKit 和 SwiftUI 版本
+> 所有代码示例都有 UIKit 和 SwiftUI 版本
 
-* font weight & scale
+* font weight & font scale
 * varients
 * rendering modes
   * Monochrome
@@ -21,7 +21,7 @@
   * Combining configs
   * Localization
     * Voice Over(?)
-  * Colors in sttributed strings(?)
+  * Colors in attributed strings(?)
 
 ## 总结以及感想
 

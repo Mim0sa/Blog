@@ -105,9 +105,31 @@ imageView.tintColor = .red
 
 ### 字重和比例
 
+SF Symbols 和 Apple 平台的系统字体 San Francisco 一样，拥有九种字重：
+
+* Ultralight
+* Thin
+* Light
+* Regular
+* Medium
+* Semibold
+* Bold
+* Heavy
+* Black
+
+同时为了在不同使用场合体现不一样的强调性，SF Symbols 还提供了三种比例可以选择：
+
+* Small
+* Medium
+* Large
+
+这意味着每个 SF Symbol 都有 27 种样式以供使用：
+
 ![3 + 9](/Users/cm/GitHub_Local/Blog/SF Symbols/resources/3 + 9.png)
 
+符号的字重和文本的字重原理相同，都是通过加粗线条来增加字重。值得一提的是，SF Symbols 的三种比例尺寸并不是单纯的对符号进行缩放。如果你仔细观察，会发现对于同一个字重，但是不同比例的符号来说，他们线条的粗细是一样的，但是对符号的整体进行了扩充和延展。
 
+![muti scale](resources/muti scale.png)
 
 ### 变体
 

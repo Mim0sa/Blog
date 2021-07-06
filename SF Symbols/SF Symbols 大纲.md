@@ -16,12 +16,11 @@
   * Hierarchical
   * Palette
   * Muticolor
-  * Mode preference
 * tricks
-  * Combining configs
   * Localization
     * Voice Over(?)
   * Colors in attributed strings(?)
+  * Interface Builder
 
 ## 总结以及感想
 

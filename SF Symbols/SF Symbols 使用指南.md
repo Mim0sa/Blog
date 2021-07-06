@@ -1,12 +1,16 @@
+
+
 # SF Symbols 使用指南
 
-> 作者：Mim0sa，iOS 开发者
+> 作者：Mim0sa，iOS 开发者，云吸猫/狗爱好者。
+>
+> 审核：
 
-本文基于 [Session 10097](https://developer.apple.com/videos/play/wwdc2021/10097), [Session 10251](https://developer.apple.com/videos/play/wwdc2021/10251) 和 [Session 10349](https://developer.apple.com/videos/play/wwdc2021/10349) 梳理。
+本文基于 WWDC 2021 [Session 10097](https://developer.apple.com/videos/play/wwdc2021/10097), [Session 10251](https://developer.apple.com/videos/play/wwdc2021/10251) 和 [Session 10349](https://developer.apple.com/videos/play/wwdc2021/10349) 梳理。本文从 SF Symbols 的特性和优点切入，主要谈论 SF Symbols 应该如何在各个平台的代码中使用。在这次 WWDC 2021 中，除了符号的数量的增加之外，还有多种颜色渲染模式和更多的本地化选项供开发者实践，让 SF Symbols 这把利器变得更加趁手和锋利。
 
 ## 什么是 SF Symbols
 
-符号（图标）在界面中起着非常重要的作用，它们能有效地传达意义，它们可以表明你选择了哪些项目，它们可以用来从视觉上区分不同类型的内容，而且符号出现在整个视觉系统的各处，这使整个用户界面营造了一种熟悉的感觉。
+符号在界面中起着非常重要的作用，它们能有效地传达意义，它们可以表明你选择了哪些项目，它们可以用来从视觉上区分不同类型的内容，而且符号出现在整个视觉系统的各处，这使整个用户界面营造了一种熟悉的感觉。
 
 符号的实现和使用方式多种多样，但设计和使用符号时有一个更古不变的问题，那就是将符号与用户界面的另一个基本元素----'“文本”很好地配合。符号和文字在用户界面中以各种不同的大小被使用，他们之间的排列形式、对齐方式、符号颜色、文本字重与符号粗细的协调、本地化配置以及无障碍设计都需要开发者和设计师来细心配置和协调。
 
@@ -16,30 +20,32 @@
 
 ![colored symbols](/Users/cm/GitHub_Local/Blog/SF Symbols/resources/colored symbols.jpeg)
 
-对于开发者来说，这套 SF Symbols 无论是在 UIKit，AppKit 还是 SwiftUI 中都能运作良好，且使用方式也很简单方便。本文将会使用 AppKit、UIKit 和 SwiftUI 的代码示例来带大家探索如何在自己的 App 中轻松加入 SF Symbols。 
+对于开发者来说，这套 SF Symbols 无论是在 UIKit，AppKit 还是 SwiftUI 中都能运作良好，且使用方式也很简单方便。本文将会使用 AppKit、UIKit 或 SwiftUI 的代码示例来带大家探索如何在自己的 App 中轻松加入 SF Symbols。 
 
 ## 如何使用 SF Symbols
 
-在这部分，将通过介绍 SF Symbols 的一些独有的特性，来带大家深入了解 SF Symbols，展示如何在代码中使用他们，以及介绍一些使用时的注意事项。
-
 ### SF Symbols 3 App
 
-在开始介绍如何使用 SF Symbols 之前，我们可以先下载 SF Symbols 3 App，这款 App 中收录了所有的 SF Symbols，并且记录了每个符号的名称，支持的渲染模式，不同语言的变体，不同 OS 版本下可能出现的不同的名称，并且可以实时预览不同渲染模式下不同强调色的不同效果。你可以在[这里](https://developer.apple.com/sf-symbols/)下载 SF Symbols 3 App。
+在开始介绍如何使用 SF Symbols 之前，我们可以先下载来自 Apple 官方的 SF Symbols 3 App，这款 App 中收录了所有的 SF Symbols，并且记录了每个符号的名称，支持的渲染模式，不同语言的变体，不同 OS 版本下可能出现的不同的名称，并且可以实时预览不同渲染模式下不同强调色的不同效果。你可以在[这里](https://developer.apple.com/sf-symbols/)下载 SF Symbols 3 App。
 
 ![SF Symbols 3](resources/SF Symbols 3.png)
 
-### 渲染模式
+### 符号的渲染模式
 
 通过之前的图片你可能已经注意到了，SF Symbols 可以拥有多种颜色，有一些 symbol 甚至还有预设的颜色，例如代表天气、肺部、电池的符号等等。如果要使用这些带有自定义颜色的符号，你需要了解，SF Symbols 有四种渲染模式：
 
 #### 单色模式 Monochrome
 
-在 iOS 15 / macOS 11 之前，单色模式是唯一的渲染模式。要设置单色模式的符号，我们只需要设置图片的 tint color 或者 accent color 就可以完成。
+在 iOS 15 / macOS 11 之前，单色模式是唯一的渲染模式，顾名思义，单色模式会让符号有一个单一的颜色。要设置单色模式的符号，我们只需要设置图片的 tint color 或者 accent color 就可以完成。
 
 ```swift
 let image = UIImage(systemName: "battery.100.bolt")
 imageView.image = image
 imageView.tintColor = .systemYellow
+
+// SwiftUI
+Image(systemName: "battery.100.bolt")
+  .foregroundStyle(.yellow)
 ```
 
 ![Monochrome](resources/Monochrome.png)
@@ -56,21 +62,30 @@ var image = NSImage(systemSymbolName: "battery.100.bolt",
 let config = NSImage.SymbolConfiguration(hierarchicalColor: .systemYellow)
 imageView.image = image
 imageView.symbolConfiguration = config
+
+// SwiftUI
+Image(systemName: "battery.100.bolt")
+  .foregroundStyle(.yellow)
+	.symbolRenderingMode(.hierarchical)
 ```
 
 ![Hierarchical](resources/Hierarchical.png)
 
-> 你可以在 SF Symbols 3 App 中查询到每个符号的层级有几个以及他们是如何分配的。
+> 你可以在 SF Symbols 3 App 中查询到每个符号有几个层级以及层级是如何分配的
 
 #### 调色盘模式 Palette
 
-调色盘模式和分层模式很像，但也有些许不同。和分层模式一样，调色盘模式也会对符号的各个层级进行上色，而不同的是，调色盘模式允许你自由的分别设置三个层级各自的颜色，就像你正在用一块调色盘一样🎨。
+调色盘模式和分层模式很像，但也有些许不同。和分层模式一样是，调色盘模式也会对符号的各个层级进行上色，而不同的是，调色盘模式允许你自由的分别设置三个层级各自的颜色，就像你正在用一块调色盘一样🎨。
 
 ```swift
 let image = UIImage(systemName: "battery.100.bolt")
 let config = UIImage.SymbolConfiguration(paletteColors: [.red, .orange, .yellow])
 imageView.image = image
 imageView.symbolConfiguration = config
+
+// SwiftUI
+Image(systemName: "battery.100.bolt")
+    .foregroundStyle(.red, .yellow, .red)
 ```
 
 ![Palette](resources/Palette.png)
@@ -79,18 +94,22 @@ imageView.symbolConfiguration = config
 
 #### 多色模式 Muticolor
 
-在 SF Symbols 中，有许多图标的意象在现实生活中已经深入人心，比如：删除操作应该是红色的，添加操作应该是绿色的，电池应该是绿色的等等。所以 SF Symbols 也提供了与现实世界色彩相契合的颜色模式：多色渲染模式。当你使用多色模式的时候，就能看到预设的黄色太阳符号，橙色药丸符号，且你不需要指定任何颜色。
+在 SF Symbols 中，有许多符号的意象在现实生活中已经深入人心，比如：删除操作应该是红色的，添加操作应该是绿色的，天空应该是蓝色的等等。所以 SF Symbols 也提供了与现实世界色彩相契合的颜色模式：多色渲染模式。当你使用多色模式的时候，就能看到预设的黄色太阳符号，橙色药丸符号，且你不需要指定任何颜色。
 
 ```swift
 let image = UIImage(systemName: "battery.100.bolt")
 let config = UIImage.SymbolConfiguration.preferringMultiColor
 imageView.image = image
 imageView.preferredSymbolConfiguration = config
+
+// SwiftUI
+Image(systemName: "battery.100.bolt")
+	.symbolRenderingMode(.multicolor)
 ```
 
 ![Muticolor](resources/Muticolor.png)
 
-不是所有 SF Symbols 都有多色模式的，如果对没有多色模式的符号设置多色模式将没有效果。假如你需要对某个处于多色模式的符号手动指定颜色，直接设置其 tint color 也可以达到效果。
+不是所有 SF Symbols 都有多色模式的，如果对没有多色模式的符号设置多色模式将没有效果。假如你需要对某个处于多色模式的符号手动指定颜色，且该符号有图层可以接受强调色的话，直接设置其 tint color 也可以达到效果。
 
 ```swift
 let image = UIImage(systemName: "flame.fill") // 🔥
@@ -100,8 +119,18 @@ imageView.preferredSymbolConfiguration = config
 // configure the fire symbol with red color
 imageView.tintColor = .red
 ```
+此外，你也可以将多色模式与其他渲染模式结合起来，当符号支持多色模式时会使用多色模式预设的颜色，而不支持时会使用另一个渲染模式。要注意的是，当你结合分层模式和调色板模式的时候只能选择一个，因为它们是互斥的。若这两个颜色模式也不被该符号支持，那就会使用单色模式。除此之外，也可以通过类似的操作，将渲染模式和字重等其他配置结合起来。
 
-> 你可以在 SF Symbols 3 App 中查询到每个符号支持的模式有哪些。
+```swift
+let image = UIImage(systemName: "battery.100.bolt")
+let multiColorConfig = UIImage.SymbolConfiguration.preferringMultiColor
+let paletteConfig = UIImage.SymbolConfiguration(paletteColors: [.red, .orange, .yellow])
+let config = multiColorConfig.applying(paletteConfig)
+imageView.image = image
+imageView.preferredSymbolConfiguration = config
+```
+
+> 你可以在 SF Symbols 3 App 中查询到每个符号支持哪些模式
 
 ### 字重和比例
 
@@ -127,22 +156,66 @@ SF Symbols 和 Apple 平台的系统字体 San Francisco 一样，拥有九种�
 
 ![3 + 9](/Users/cm/GitHub_Local/Blog/SF Symbols/resources/3 + 9.png)
 
-符号的字重和文本的字重原理相同，都是通过加粗线条来增加字重。值得一提的是，SF Symbols 的三种比例尺寸并不是单纯的对符号进行缩放。如果你仔细观察，会发现对于同一个字重，但是不同比例的符号来说，他们线条的粗细是一样的，但是对符号的整体进行了扩充和延展。
+```swift
+let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold, scale: .large)
+imageView.preferredSymbolConfiguration = config
+
+// SwiftUI
+Label("Heart", systemImage: "heart")
+  .imageScale(.large)
+  .font(.system(size: 20, weight: .semibold))
+```
+
+符号的字重和文本的字重原理相同，都是通过加粗线条来增加字重。值得一提的是，SF Symbols 的三种比例尺寸并不是单纯的对符号进行缩放。如果你仔细观察，会发现对于同一个字重，但是不同比例的符号来说，他们线条的粗细是一样的，但是对符号的整体进行了扩充和延展，以应对不一样的使用环境。
 
 ![muti scale](resources/muti scale.png)
 
-### 变体
+### 符号变体
+
+对于某些符号来说，有多种表现形式，我们以 `"heart"` 这个符号为例子，他有许多种变体：
+
+![heart  varient](resources/heart varient.png)
+
+在以前，如果我们想要使用圆形底填充样式的爱心，我们可以使用 `UIImage(systemImage: "heart.circle.fill")` 这样名称字符串拼接的形式来实现。但是要注意的是你需要先拼接 `".circle"` 再拼接 `".fill"`，如果反过来将会找不到这个符号。
+
+现在我们有了更简便的方法，更好用也更不容易出错：
+
+```swift
+let imageView = UIImageView(image: UIImage(systemName: "heart"))
+imageView.imageVariant = .circle.fill
+
+// SwiftUI
+Label("Heart", systemImage: "heart")
+  .symbolVarient(.circle.fill)
+```
+
+在不同的使用场景下我们通常会使用不同风格的符号，比如 iOS 在 tab bar 中我们会使用填充样式（`.fill`）的符号，而 macOS 在 tab bar 中我们更倾向于线性符号。但如果你是在 SwiftUI 中，在系统提供的大部分 View 中使用符号的话，你无需使用填充样式，系统会根据自身平台是 iOS 还是 macOS 来决定到底展示哪种风格的符号。以下方代码为例子，该 TabView 在 iOS 下是填充样式，而在 macOS 下是线性样式。
+
+```swift
+TabView {
+  CardsView().tabItem {
+    Label("Cards", systemImage: "person.circle") // 不需要加.fill
+  }
+}
+```
 
 ### 一些其它技巧
 
+#### 符号的本地化
+
+有一些符号对于不同地区不同语言的使用者来说，有着不同的特点。比如字典上的文字，🌏地球的角度，书写文本的方向等等，这些符号都是需要本地化的，而 SF Smybols 已经为我们处理好了这个问题。在今年，Apple 扩大了 SF Symbols 多语言本地化的覆盖范围，增加了阿拉伯文、希伯来文和德瓦那加里文的新符号，并包括泰文、中文、日文和韩文的设计。所有这些本地化的符号和文字变体都能根据用户的设备语言自动适应，包括从右到左的书写系统，从而使之变得简单，且开发者不需要做额外的工作。
+
+![Localization](resources/Localization.png)
+
+#### 在 Interface Builder 中使用符号
+
+在代码中对 SF Symbols 进行配置的这些代码，在 Interface Builder 中也可以实现🎉。
+
+![Interface Builder](resources/Interface Builder.png)
+
 ## 总结
 
-
-
-
-
-
-
+从上文介绍 SF Symbols 的特性和优点我们可以看到，它的出现是为了解决符号与文本之间的协调性问题，私以为在这方面，Apple 提供的这个工具已经做的非常好了，对各个细节的处理都十分到位。有个小小的遗憾是：今年更新的许多内容，例如渲染模式以及很多新的有趣符号，都是仅支持 iOS 15 以上，距离广泛引用还有一段距离。但这次更新之后，SF Symbols 无论是在查询符号、接入代码以及符号的丰富程度上来说，都达到了让人惊艳的程度，相信对于大部分小型开发者来说，可以说是会放在第一手选择的的符号工具🥳。
 
 
 

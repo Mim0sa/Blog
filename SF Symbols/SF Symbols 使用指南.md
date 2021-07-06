@@ -215,8 +215,18 @@ TabView {
 
 从上文介绍 SF Symbols 的特性和优点我们可以看到，它的出现是为了解决符号与文本之间的协调性问题，私以为在这方面，Apple 提供的这个工具已经做的非常好了，对各个细节的处理都十分到位。有个小小的遗憾是：今年更新的许多内容，例如渲染模式以及很多新的有趣符号，都是仅支持 iOS 15 以上，距离广泛引用还有一段距离。但这次更新之后，SF Symbols 无论是在查询符号、原生支持、代码接入以及符号的丰富程度上来说，都达到了让人惊艳的程度，相信对于大部分小型开发者来说，可以说是会放在第一手选择的的符号工具🥳。
 
+## 更多资料
 
+以下是更多关于 SF Symbols 的资料：
 
-
+* [[ WWDC 21 ] What’s new in SF Symbols](https://developer.apple.com/videos/play/wwdc2021/10097)
+* [[ WWDC 21 ] SF Symbols in UIKit and AppKit](https://developer.apple.com/videos/play/wwdc2021/10251/)
+* [[ WWDC 21 ] SF Symbols in SwiftUI](https://developer.apple.com/videos/play/wwdc2021/10349)
+* [[ WWDC 21 ] Explore the SF Symbols 3 app](https://developer.apple.com/videos/play/wwdc2021/10288)
+* [[ WWDC 21 ] Create custom symbols](https://developer.apple.com/videos/play/wwdc2021/10250)
+* [[ WWDC 20 ] SF Symbols 2](https://developer.apple.com/videos/play/wwdc2020/10207)
+* [[ WWDC 19 ] Introducing SF Symbols](https://developer.apple.com/videos/play/wwdc2019/206)
+* [[ Human Interface Guidelines ] SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols/overview/)
+* [[ Developer ] SF Symbols](https://developer.apple.com/sf-symbols/)
 
 

@@ -16,7 +16,7 @@
 
 为了方便开发者更便捷、轻松地使用符号，Apple 在 iOS 13 中开始引入他们自己设计的海量高质量符号，称之为 SF Symbols。SF Symbols 拥有超过 3100 个符号，是一个图标库，旨在与 Apple 平台的系统字体 San Francisco 无缝集成。符号有 9 种字重和 3 种比例，并自动与文本标签对齐。同时这些符号是矢量的，这意味着它们是可以被拉伸的，使得他们在无论用什么大小时都会呈现出很好的效果。它们也可以被导出并在矢量图形编辑工具中进行编辑，来创建具有共享设计特征和无障碍功能的自定义符号。
 
-![colored symbols](/Users/cm/GitHub_Local/Blog/SF Symbols/resources/colored symbols.jpeg)
+![colored symbols](resources/colored symbols.jpeg)
 
 对于开发者来说，这套 SF Symbols 无论是在 UIKit，AppKit 还是 SwiftUI 中都能运作良好，且使用方式也很简单方便。本文将会使用 AppKit、UIKit 或 SwiftUI 的代码示例来带大家探索如何在自己的 App 中轻松加入 SF Symbols。 
 
@@ -43,7 +43,7 @@ imageView.tintColor = .systemYellow
 
 // SwiftUI
 Image(systemName: "battery.100.bolt")
-  .foregroundStyle(.yellow)
+	.foregroundStyle(.yellow)
 ```
 
 ![Monochrome](resources/Monochrome.png)
@@ -63,7 +63,7 @@ imageView.symbolConfiguration = config
 
 // SwiftUI
 Image(systemName: "battery.100.bolt")
-  .foregroundStyle(.yellow)
+	.foregroundStyle(.yellow)
 	.symbolRenderingMode(.hierarchical)
 ```
 
@@ -83,7 +83,7 @@ imageView.symbolConfiguration = config
 
 // SwiftUI
 Image(systemName: "battery.100.bolt")
-    .foregroundStyle(.red, .yellow, .red)
+	.foregroundStyle(.red, .yellow, .red)
 ```
 
 ![Palette](resources/Palette.png)
@@ -152,7 +152,7 @@ SF Symbols 和 Apple 平台的系统字体 San Francisco 一样，拥有九种�
 
 这意味着每个 SF Symbol 都有 27 种样式以供使用：
 
-![3 + 9](/Users/cm/GitHub_Local/Blog/SF Symbols/resources/3 + 9.png)
+![3 + 9](resources/3 + 9.png)
 
 ```swift
 let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold, scale: .large)
@@ -160,8 +160,8 @@ imageView.preferredSymbolConfiguration = config
 
 // SwiftUI
 Label("Heart", systemImage: "heart")
-  .imageScale(.large)
-  .font(.system(size: 20, weight: .semibold))
+	.imageScale(.large)
+	.font(.system(size: 20, weight: .semibold))
 ```
 
 符号的字重和文本的字重原理相同，都是通过加粗线条来增加字重。值得一提的是，SF Symbols 的三种比例尺寸并不是单纯的对符号进行缩放。如果你仔细观察，会发现对于同一个字重，但是不同比例的符号来说，他们线条的粗细是一样的，但是对符号的整体进行了扩充和延展，以应对不一样的使用环境。
@@ -184,7 +184,7 @@ imageView.imageVariant = .circle.fill
 
 // SwiftUI
 Label("Heart", systemImage: "heart")
-  .symbolVarient(.circle.fill)
+	.symbolVarient(.circle.fill)
 ```
 
 在不同的使用场景下我们通常会使用不同风格的符号，比如 iOS 在 tab bar 中我们会使用填充样式（`.fill`）的符号，而 macOS 在 tab bar 中我们更倾向于线性符号。但如果你是在 SwiftUI 中，在系统提供的大部分 View 中使用符号的话，你无需使用填充样式，系统会根据自身平台是 iOS 还是 macOS 来决定到底展示哪种风格的符号。以下方代码为例子，该 TabView 在 iOS 下是填充样式，而在 macOS 下是线性样式。

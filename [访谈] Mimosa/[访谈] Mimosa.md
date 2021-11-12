@@ -15,7 +15,7 @@
 ### 你当时开发的是什么作品？
 那一年是第一次 Apple 要求参赛者制作一个 playground（之前都是要求做一个介绍自己的 App 这种类型的题目），我制作了一个简单又可爱的可视化冒泡排序教程💂‍♀️，运行在 Swift Playgrounds 这个 App 中（可以在 iPad App Store 和 Mac App Store 中找到这个 App），利用这个 App 一侧可以写代码，一侧可以查看运行结果这种所见即所得的特性，来教使用者冒泡排序算法的原理。
 
-![sorting](/Users/cm/GitHub_Local/Blog/[访谈] Mimosa/assets/sorting.PNG)
+![sorting](assets/sorting.PNG)
 
 ### 参加 WWDC 期间有什么好玩的事情，这个过程有什么收获？
 

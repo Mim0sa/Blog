@@ -441,7 +441,119 @@ class MyClass2
 end
 ```
 
+创建模块：
 
+```ruby
+module HelloModule
+  Version = "1.0"
+  
+  def hello(name)
+    puts "Hello, #{name}."
+  end
+  
+  module_function :hello
+end
+
+p HelloModule::Version     #=> "1.0"
+HelloModule.hello("Alice") #=> Hello, Alice.
+
+include HelloModule
+p Version
+hello("Alice")
+```
+
+在模块中调用 `self` 要小心：
+
+```ruby
+module FooModule
+   def foo
+     p self
+   end
+  module_function :foo
+end
+
+FooModule.foo #=> FooModule
+```
+
+> 如果在被 mix-in 的类中调用含 `self` 的方法，将会返回被 mix-in 的那个对象，导致其在不同上下文的情况下，其含义也会不同
+
+Mix-in 与继承：
+
+```ruby
+module M
+  def meth
+    "meth"
+  end
+end
+
+class C
+  include M
+end
+
+c = C.new
+p c.meth #=> meth
+
+p c.ancestors  #=> [C, M, Object, Kernel, BasicObject]
+p c.superclass #=> Object
+```
+
+> 类 C 的实例在调用方法时，Ruby 会按照其 `ancestors` 的顺序去调用查找该方法，更详尽的查找方法规则在书 p105 页
+
+利用 extend 将模块 mix-in 进对象：
+
+```ruby
+module Edition
+  def edition(n)
+    "#{self} 第 #{n} 版"
+  end
+end
+
+str = "Mimosa 的生活"
+str.extend(Edition)
+p str.edition(25) #=> "Mimosa 的生活第 25 版"
+```
+
+利用 extend 定义类方法：
+
+```ruby
+module ClassMethods
+  def cmethod
+    "class method"
+  end
+end
+
+module Instancemethods
+  def imethod
+    "instance method"
+  end
+end
+
+class MyClass
+  extend ClassMethods
+  include Instancemethods 
+end
+
+p MyClass.cmethod     #=> "class method"
+p MyClass.new.imethod #=> "instance method"
+```
+
+面向对象的特征：
+
+```ruby
+# 封装
+t = Time.now
+p t.year
+
+obj = Object.new
+str = "Mimosa"
+num = Math::PI
+
+p obj.to_s #=> "#<Object:0x7fa1d6bd1008>"
+p str.to_s #=> "Ruby"
+p num.to_s #=> "3.141592653589793"
+```
+
+鸭子类型：
 
 
 

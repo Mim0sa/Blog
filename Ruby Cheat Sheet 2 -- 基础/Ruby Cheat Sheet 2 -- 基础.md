@@ -475,7 +475,7 @@ end
 FooModule.foo #=> FooModule
 ```
 
-> 如果在被 mix-in 的类中调用含 `self` 的方法，将会返回被 mix-in 的那个对象，导致其在不同上下文的情况下，其含义也会不同
+> 如果在被 mix-in 的类中调用含 `self` 的方法，将会返回被 mix-in 的那个对象，导致其在不同上下文的情况下，其含义也会不同。
 
 Mix-in 与继承：
 
@@ -497,7 +497,7 @@ p c.ancestors  #=> [C, M, Object, Kernel, BasicObject]
 p c.superclass #=> Object
 ```
 
-> 类 C 的实例在调用方法时，Ruby 会按照其 `ancestors` 的顺序去调用查找该方法，更详尽的查找方法规则在书 p105 页
+> 类 C 的实例在调用方法时，Ruby 会按照其 `ancestors` 的顺序去调用查找该方法，更详尽的查找方法规则在书 p105 页。
 
 利用 extend 将模块 mix-in 进对象：
 
@@ -555,11 +555,59 @@ p num.to_s #=> "3.141592653589793"
 
 鸭子类型：
 
+> 鸭子类型(duck typing)是指：对象的特征并不是由其种类(类及其继承关系)决定的，而是由对象本身具有什么样的行为(拥有什么方法)决定的。如下例子中：`fetch_and_downcase` 方法并不关心传进来的到底是数组还是散列。
 
+```ruby
+def fetch_and_downcase(ary, index)
+  if str = ary[index]
+		return str.downcase
+  end
+end
 
+ary = ["Boo", "Foo", "Woo"]
+hash = {0 => "Boo", 1 => "Foo", 2 => "Woo"}
 
+p fetch_and_downcase(ary, 1)  #=> "foo"
+p fetch_and_downcase(hash, 1) #=> "foo"
+```
 
+> Ruby 中的变量没有限制类型，所以不会出现不是某个特定的类的对象，就不能给变量赋值的情况。因此，在程序开始运行之前，我们都无法知道变量指定的对象的方法调用是否正确。
+>
+> 这样的做法有个缺点，就是增加了程序运行前检查错误的难度。但是，从另外一个角度来看，则可以非常简单地使没有明确继承关系的对象之间的处理变得通用。只要能执行相同的操作，我们并不介意执行者是否一样；相反，虽然实际上是不同的执行者，但通过定义相同名称的方法，也可以实现处理通用化。这就是鸭子类型思考问题的方法。
 
+运算符：
+
+> Ruby 中的运算符和别的语言的差的不多，详见书「第 9 章 运算符」。
+
+异常处理的写法：
+
+```ruby
+ def foo
+   File.open("/no/file")
+ end
+
+def bar
+  foo()
+end
+
+begin
+  bar()
+rescue => ex
+  print ex.message, "\n"
+  sleep 10
+  retry
+ensure
+  print "ensure sth"
+end
+```
+
+rescue 修饰符：
+
+```ruby
+n = Integer(val) rescue 0
+```
+
+> 更多详尽的异常处理语法请看书「第十章 错误处理与异常」
 
 
 

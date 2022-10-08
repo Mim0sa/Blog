@@ -609,9 +609,87 @@ n = Integer(val) rescue 0
 
 > 更多详尽的异常处理语法请看书「第十章 错误处理与异常」
 
+Ruby 中所有的异常都是 `Exception` 类的子类，并根据程序错误的种类来定义相应的异常，`StandardError` 就是它的一个常用子类。通过以下方式捕捉异常的话，同时就会捕捉 `MyError` 类的子类 `MyError1`、`MyError2`、`MyError3` 等。
 
+```ruby
+MyError = Class.new(StandardError)
+MyError1 = Class.new(MyError)
+MyError2 = Class.new(MyError)
+MyError3 = Class.new(MyError)
 
+begin
+┊
+rescue MyError
+┊
+end
+```
 
+块（block）：
+
+```ruby
+sum = 0
+outcome = {"参加费"=>1000, "挂件费用"=>1000, "联欢会费用"=>4000}
+outcome.each do |item, price|
+	sum += price
+end
+puts "合计: #{sum}"
+```
+
+> 更多语言自带的排序方法详见书「第 11 章 块」。
+
+定义带块的方法：
+
+```ruby
+def total(from, to)
+  result = 0
+	from.upto(to) do |num|
+  	if block_given?
+    	result += yield(num)
+  	else
+    	result += num
+		end
+	end
+  return result
+end
+
+p total(1, 10)                   # 从1 到10 的和 => 55
+p total(1, 10){ |num| num ** 2 } # 从1 到10 的2 次幂的和 => 385
+```
+
+控制块的执行：
+
+```ruby
+n = total(1, 10) do |num|
+  if num == 5
+		break    # break
+  end
+	num
+end
+p n    #=> nil
+
+n = total(1, 10) do |num|
+  if num % 2 != 0
+		next 0    # next
+  end
+	num
+end
+p n    #=> 30
+```
+
+将块封装为对象：Ruby 还能把块当作对象处理，把块当作对象处理后，就可以在接收块的方法之外的其他地方执行块，或者把块交给其他方法执行。这种情况下需要用到 `Proc` 对象。`Proc` 对象是能让块作为对象在程序中使用的类。
+
+```ruby
+hello = Proc.new do |name|
+  puts "Hello, #{name}."
+end
+
+hello.call("World") 
+hello.call("Ruby")
+
+> ruby proc1.rb
+# Hello, World.
+# Hello, Ruby.
+```
 
 
 

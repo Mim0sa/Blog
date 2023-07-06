@@ -32,7 +32,7 @@ session_ids: [10257]
 
 ### 如何使用符号
 
-使用 SF Symbols 非常简单，利用系统框架的 UIImage、NSImage 或者 SwiftUI 中的 Image 即可完成，你所要做的，就是去 SF Symbols App 中找到你喜欢的符号，然后复制这个符号的名字，将它粘贴到代码中即可。对于 SF Symbol 来说，我们可以调节他的字重和比例来满足搭配不同类型文字的需求，和  Apple 平台的系统字体 San Francisco 一样，SF Symbols 有有 9 种字重和 3 种比例来满足你不同场景下的使用需求。
+使用 SF Symbols 非常简单，利用系统框架的 UIImage、NSImage 或者 SwiftUI 中的 Image 即可完成，你所要做的，就是去 SF Symbols App 中找到你喜欢的符号，然后复制这个符号的名字，将它粘贴到代码中即可。对于 SF Symbols 来说，我们可以调节他的字重和比例来满足搭配不同类型文字的需求，和  Apple 平台的系统字体 San Francisco 一样，SF Symbols 有有 9 种字重和 3 种比例来满足你不同场景下的使用需求。
 
 ![new3x9](images/new3x9.png)
 
@@ -107,7 +107,7 @@ let img = NSImage(symbolName: "wifi", variableValue: 0.2)
 
 ![ColoredVariableSymbols](images/ColoredVariableSymbols.gif)
 
-但仅仅通过 value 来控制 symbol 的可变颜色形态，并不能让我们很方便的展示出如上图这样的动态效果，但是今年推出的 SF Symbol 动画效果完美的解决了这一点，也让可变颜色这个功能变得更加方便实用，我们会在后文中看到详细的动画使用方法。
+但仅仅通过 value 来控制 symbol 的可变颜色形态，并不能让我们很方便的展示出如上图这样的动态效果，但是今年推出的 SF Symbols 动画效果完美的解决了这一点，也让可变颜色这个功能变得更加方便实用，我们会在后文中看到详细的动画使用方法。
 
 > 如果你想了解关于更多关于可变颜色的内容，[WWDC 2022 内参：SF Symbols 4 使用指南](https://xiaozhuanlan.com/topic/8712590364)
 
@@ -129,7 +129,7 @@ let img = NSImage(symbolName: "wifi", variableValue: 0.2)
 
 ### 动画
 
-目前 SF Symbols 的动画一共有 7 种，分别是：Appear, Disappear, Bounce, Scale, Variable Color, Pulse, Replace。接下来我会通过代码来展示每个动画的运作机制和特点。在这之前，我们可以先打开 SF Symbol App，这个 App 中有所有符号的所有动画的预览，就在每个符号右侧边栏第三个 tab 上，并且你也可以通过调节选项来预览不同的动画效果组合，并且还可以在右侧直接复制你调整好的动画代码。
+目前 SF Symbols 的动画一共有 7 种，分别是：Appear, Disappear, Bounce, Scale, Variable Color, Pulse, Replace。接下来我会通过代码来展示每个动画的运作机制和特点。在这之前，我们可以先打开 SF Symbols App，这个 App 中有所有符号的所有动画的预览，就在每个符号右侧边栏第三个 tab 上，并且你也可以通过调节选项来预览不同的动画效果组合，并且还可以在右侧直接复制你调整好的动画代码。
 
 在代码中使用动画非常简单，不管是在 SwiftUI 还是在 UIKit、AppKit 中，所有的动画选项都是代码链起来的，不含字符串。所有的动画效果，在 Api 中我们称之为 `SymbolEffect`。
 
@@ -172,7 +172,7 @@ Image(systemName: "folder.badge.plus")
 
 > 如果你想了解更多关于可变颜色符号的信息，或者想知道如何制作带可变颜色特性的自定义符号，请看往年的这篇内参。
 
-Variable Color 的动画比较特别，除了可以选择按图层动画或者整体动画之外，他还可以选择动画过程中是否要把图层隐藏、动画模式是累加还是迭代、一次动画结束之后要不要反向再做一次动画等。这些动画都可以在 SF Symbol App 中任意组合预览。
+Variable Color 的动画比较特别，除了可以选择按图层动画或者整体动画之外，他还可以选择动画过程中是否要把图层隐藏、动画模式是累加还是迭代、一次动画结束之后要不要反向再做一次动画等。这些动画都可以在 SF Symbols App 中任意组合预览。
 
 ```swift
 Image(systemName: "rainbow")
@@ -222,7 +222,7 @@ imgView.setSymbolImage(img, contentTransition: .replace.upUp)
 
 ![2Kinds](images/2Kinds.gif)
 
-这两好种效果从逻辑上来说都是合理的，面对不同的需求我们可能需要选择不同的实现方式来达到效果。我们先来看一下不会影响原有的布局的 Appear / Disappear 是如何实现的：我们通过 symbolEffect 效果来实现一个符号的出现和消失，他可以由一个值的变动来进行触发，他是一种在自己控件内进行画面更新的操作，不影响这个控件之外的内容。
+这两种效果从逻辑上来说都是合理的，但面对不同的需求我们可能需要选择不同的实现方式来达到效果。我们先来看一下不会影响原有的布局的 Appear / Disappear 是如何实现的：我们通过 symbolEffect 效果来实现一个符号的出现和消失，他可以由一个值的变动来进行触发，他是一种在自己控件内进行画面更新的操作，不影响这个控件之外的内容。
 
 ```swift
 // SwiftUI
@@ -280,7 +280,7 @@ let imgView: UIImageView = ...
 imgView.addSymbolEffect(.bounce, option: .repeat(2))
 ```
 
-那还有一些动画执行完了之后，我们还是要费心去管理一下的，我们总结他们为 `indefinite` 动画，Appear, Disappear, Scale, Variable Color, Pulse 这些动画都是这个类型的。这些动画的特点是当它们执行了之后，他们可能需要停留在动画的状态下一段时间，直到接收到关闭动画的指令。你可以发现 Variable Color, Pulse 这两个动画他们既是 `Discrete` 动画，同时也是 `indefinite` 动画，因为他们既可以单独被触发固定次数，也可以通过变量来控制他们的动画状态，而不被限制固定次数。
+那还有一些动画执行完了之后，我们还是要费心去管理一下的，我们总结他们为 `indefinite` 动画，Appear, Disappear, Scale, Variable Color, Pulse 这些动画都是这个类型的。这些动画的特点是当它们执行了之后，他们可能需要停留在运动的状态下一段时间，直到接收到关闭动画的指令。你可以发现 Variable Color, Pulse 这两个动画他们既是 `Discrete` 动画，同时也是 `indefinite` 动画，因为他们既可以单独被触发固定次数，也可以通过变量来控制他们的动画状态，两种行为他们都可以实现。
 
 ```swift
 // SwiftUI
@@ -297,16 +297,16 @@ imgView.addSymbolEffect(.variableColor)
 imgView.removeSymbolEffect(ofType: .variableColor)
 ```
 
-还记得我们的 Appear, Disappear 动画有两种形式吗？上文提到的 `indefinite` 动画中的 Appear, Disappear 是不影响控件之外的那种形式，还有另一种 Appear, Disappear 动画，在执行过程中会影响到整体的布局，这种 Appear, Disappear 动画属于 `Transition` 类型。还剩下 Repalce 动画，单独属于 `Content Transition` 类型。
+还记得我们的 Appear, Disappear 动画有两种形式吗？上文提到的 `indefinite` 动画中的 Appear, Disappear 是不影响控件之外、只在控件内部更新画面的那种形式。还有另一种 Appear, Disappear 动画，在执行过程中会影响到整体的布局，这种 Appear, Disappear 动画属于 `Transition` 类型。还剩下 Repalce 动画，单独属于 `Content Transition` 类型。
 
-我们把动画分成四种类型，是因为目前所有的动画都遵守了这四个类型所代表的协议，如下图所示。也许今后会有更多的动画类型、动画协议加入这个表格，丰富符号的动画，同时我们也许可以通过协议的组合来窥探这些动画的具体实现方式，这部分内容就留给读者自己探索啦😈。
+我们把动画分成四种类型，是因为目前所有的动画都遵守了这四个类型所代表的协议，如下图所示。也许今后会有更多的动画类型、动画协议加入这个表格，丰富符号们的动画效果，同时我们也许可以通过协议的组合来窥探这些动画的具体实现方式，这部分内容就留给读者自己探索啦😈。
 
 ![4Protocols](images/4Protocols.png)
 
 
 ##  定制属于你的 Symbols
 
-当我们觉得系统提供的 5000 个 symbols 不能满足我们需求的时候，我们也可以自己绘制属于自己的 symbol，并导入到 SF Symbol App 中，通过一些简单的调整渲染模式的预设颜色、调整动画的图层等，就可以导出到我们的 app 中使用，更多的定制 symbols 的基础介绍可以在 [WWDC 21 内参：定制属于你的 Symbols](https://xiaozhuanlan.com/topic/4807632591) 中详细了解。
+当我们觉得系统提供的 5000 个 symbols 不能满足我们需求的时候，我们也可以自己绘制属于自己的 symbol，或是在系统 symbol 的基础上进行修改，导入到 SF Symbols App 中，通过一些简单的调整渲染模式的预设颜色、调整动画的图层等，就可以导出到我们的 app 中使用，更多的定制 symbols 的基础介绍可以在 [WWDC 21 内参：定制属于你的 Symbols](https://xiaozhuanlan.com/topic/4807632591) 中详细了解。
 
 那在今年引入了动画这个新特性之后，我们能够在定制符号的同时，也可以通过调整图层来定制符号动画的具体表现。
 
@@ -316,7 +316,7 @@ imgView.removeSymbolEffect(ofType: .variableColor)
 
 ![PulseAll](images/PulseAll.gif)
 
-这时候，我们可以通过点击每个图层最右侧的 `activate always pulse` 按钮，也就是那个像小太阳一样的按钮，来激活他的 Pulse 动画，并且一旦你激活了某一个图层，那么剩下的所有未激活图层，都不会参与 Pulse 动画。在这个例子中，我只想我符号中的的两颗星星闪烁，那么我需要激活两颗星星所对应图层的小太阳按钮就可以达到效果。
+这时候，我们可以通过点击每个图层最右侧的 `activate always pulse` 按钮，也就是那个像小太阳一样的按钮，来激活他的 Pulse 动画，并且一旦你激活了某一个图层，那么剩下的所有未激活图层，都不会参与 Pulse 动画。在这个例子中，我只想我符号中的两颗星星闪烁，那么我需要激活两颗星星所对应图层的小太阳按钮就可以达到效果。
 
 ![PulseStars](images/PulseStars.gif)
 
@@ -326,7 +326,7 @@ imgView.removeSymbolEffect(ofType: .variableColor)
 
 ![TooMuchMotion](images/TooMuchMotion.gif)
 
-这时候我们可以点击图层板块左下角的加号，将你想要的图层合并成一个组，这样在动画的时候，图层将按组进行动画。例如我想要将星星分为一组，将所有的圆圈分为另一组，下图是我的演示。
+这时候我们可以点击图层板块左下角的加号，将你想要的图层合并成一个组，这样在执行动画的时候，图层将按组进行动画。例如我想要将星星分为一组，将所有的圆圈分为另一组，下图是我的演示。
 
 ![GroupMotion](images/GroupMotion.gif)
 
@@ -334,14 +334,14 @@ imgView.removeSymbolEffect(ofType: .variableColor)
 
 ![Component](images/Component.png)
 
-在今年，SF Symbols 在定制化方面还有一个新功能，那就是 Symbol Components，这个功能可以让你的自定义符号，可以以各种形态加入到你的 App 中，来适配 MacOS、iOS 以及你所需要的界面风格。你通过这个方式生成的新符号，系统会自动地帮你设置好 Erase 图层，同时在所有的动画效果、渲染模式、字重和比例下运作良好，非常方便。同时你需要注意的是，通过这个方式生成的符号，不再可以手动的调整图层以及更改动画设置了。
+在今年，SF Symbols 在定制化方面还有一个新功能，那就是 Symbol Components，这个功能可以让你的自定义符号，可以以各种你熟悉的形态加入到你的 App 中，来适配 MacOS、iOS 以及你所需要的界面风格。你通过这个方式生成的新符号，系统会自动地帮你设置好 Erase 图层，同时在所有的动画效果、渲染模式、字重和比例下运作良好，非常方便。同时你需要注意的是，通过这个方式生成的符号，不可以再手动的调整图层以及更改动画设置了。
 
 ![AddComponents](images/AddComponents.gif)
 
-如果你对生成的符号有微调的需求，也可以满足你。我们可以调整在三个比例下调整这些 components 的细节。
+如果你对生成的符号有微调的需求，也可以满足你。我们可以在三个比例下调整这些 components 的细节。
 
 ![AdjustComponents](images/AdjustComponents.gif)
 
 ## 总结
 
-从 SF Symbols 的特性和优点我们可以看到，它的出现解决符号与文本之间的协调性问题，在保证了本地化、无障碍化的基础上，Apple 一直在实用性、易用度以及多样性上面给 SF Symbols 加码，今年新推出的动画比起往年的更新，更加吸引人们的眼球了，目前 SF Symbol 能覆盖的应用场景也是越来越多，目前有了 5000+ 的符号可以使用，相信在未来还会有更多、以及更多的新特性、功能给开发者使用。SF Symbols 在表现能力上，在今年都又获得了巨大的的提升，让人惊艳，随着 SF Symbols 的继续发展，我相信对于很多开发者来说，是一个非常好的符号工具🥳🥳🥳。
+从 SF Symbols 的特性和优点我们可以看到，它的出现解决符号与文本之间的协调性问题，在保证了本地化、无障碍化的基础上，Apple 一直在实用性、易用度以及多样性上面给 SF Symbols 加码，今年新推出的动画比起往年的更新，更加吸引人们的眼球了，目前 SF Symbols 能覆盖的应用场景也是越来越多，目前有了 5000+ 的符号可以使用，相信在未来还会有更多、以及更多的新特性、功能给开发者使用。SF Symbols 在表现能力上，在今年都又获得了巨大的的提升，让人惊艳，随着 SF Symbols 的继续发展，我相信对于很多开发者来说，是一个非常好的符号工具🥳🥳🥳。

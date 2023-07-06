@@ -4,7 +4,7 @@ session_ids: [10257]
 
 # SF Symbols 5 使用指南
 
-> 作者：Mim0sa，iOS 开发者，`iOS 摸鱼周报` 联合编辑，掘金主页：[Mim0sa](https://juejin.cn/user/1433418892590136)，橘猫/狗爱好者。
+> 作者：Mim0sa，iOS 开发者，`iOS 摸鱼周报` 联合编辑，掘金主页：[Mim0sa](https://juejin.cn/user/1433418892590136)，橘猫/橘狗爱好者。
 >
 > 审核：
 

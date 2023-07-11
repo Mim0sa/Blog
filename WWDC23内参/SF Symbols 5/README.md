@@ -2,13 +2,23 @@
 session_ids: [10197]
 ---
 
-# SF Symbols 5 使用指南
+# WWDC23 10197 - SF Symbols 5 使用指南
 
-> 作者：Mim0sa，iOS 开发者，`iOS 摸鱼周报` 联合编辑，掘金主页：[Mim0sa](https://juejin.cn/user/1433418892590136)，橘猫/橘狗爱好者。
+> 摘要：为了更方便没有 SF Symbols 经验的读者理解，也将往年的 SF Symbols 相关内容归纳整理。本文从 SF Symbols 的特性切入，讨论 SF Symbols 这款由系统字体支持的符号库有哪些优点以及该如何使用。在这次 WWDC 2023 中，除了符号的数量增加到了 5000+ 之外，还有能让符号们“动”起来的新功能，让 SF Symbols 这把利器变得又又更加趁手和锋利了。
+
+本文基于 WWDC 2023 [Session 10197](https://developer.apple.com/videos/play/wwdc2023/10197/)、[Session 10257](https://developer.apple.com/videos/play/wwdc2023/10257) 和 [Session 10258](https://developer.apple.com/videos/play/wwdc2023/10258) 梳理。
+
+> 作者：
+>
+> Mim0sa，iOS 开发者，`iOS 摸鱼周报` 联合编辑，掘金主页：[Mim0sa](https://juejin.cn/user/1433418892590136)，橘猫/橘狗爱好者。
 >
 > 审核：
+>
+> 戴铭，极客时间《iOS 开发高手课》和纸书《跟戴铭学 iOS 编程》作者。
+>
+> 黄骋志，老司机技术轮值主编，目前就职于字节跳动，参与西瓜视频质量与稳定性工作。对 OOM/Watchdog 较为了解并长期投入。
 
-本文基于 WWDC 2023 [Session 10197](https://developer.apple.com/videos/play/wwdc2023/10197/)、[Session 10257](https://developer.apple.com/videos/play/wwdc2023/10257) 和 [Session 10258](https://developer.apple.com/videos/play/wwdc2023/10258) 梳理，为了更方便没有 SF Symbols 经验的读者理解，也将往年的 SF Symbols 相关内容归纳整理。本文从 SF Symbols 的特性切入，讨论 SF Symbols 这款由系统字体支持的符号库有哪些优点以及该如何使用。在这次 WWDC 2023 中，除了符号的数量增加到了 5000+ 之外，还有能让符号们“动”起来的新功能，让 SF Symbols 这把利器变得又又更加趁手和锋利了。
+![WWDC23History](images/WWDC23History.png)
 
 ## 什么是 SF Symbols
 
@@ -52,44 +62,58 @@ Image(systemName: "thermometer.sun.fill")
 
 在 iOS 15 / macOS 11 之前，单色模式是唯一的渲染模式，顾名思义，单色模式会让符号有一个单一的颜色。要设置单色模式的符号，我们只需要设置视图的 tint color 等属性就可以完成。
 
+```swift
+// Monochrome
+Image(systemName: "thermometer.sun.fill")
+    .foregroundStyle(.blue)
+```
+
+![Monochrome](images/Monochrome.png)
+
 #### 分层模式 Hierarchical
 
-每个符号都是预先分层的，如下图所示，符号按顺序最多分成三个层级：Primary，Secondary，Tertiary。**SF Symbols 的分层设定不仅在分层模式下有效，在后文别的渲染模式下也是有作用的**。
+每个符号都是预先分层的，如下图所示，符号按顺序最多分成三个层级：Primary，Secondary，Tertiary。**SF Symbols 的分层设定不仅在分层模式下有效，在别的渲染模式下也是有作用的**。
 
 分层模式和单色模式一样，可以设置一个颜色。但是分层模式会以该颜色为基础，生成降低主颜色的不透明度而衍生出来的其他颜色（如上图中的**温度计符号**看起来是由三种灰色组合而成）。在这个模式中，层级结构很重要，如果缺少一个层级，相关的派生颜色将不会被使用。
+
+```swift
+// Hierarchical
+Image(systemName: "thermometer.sun.fill")
+    .foregroundStyle(.gray)
+    .symbolRenderingMode(.hierarchical)
+```
+
+![Hierarchical](images/Hierarchical.png)
 
 #### 调色盘模式 Palette
 
 调色盘模式和分层模式很像，但也有些许不同。和分层模式一样是，调色盘模式也会对符号的各个层级进行上色，而不同的是，调色盘模式允许你自由的分别设置各个层级的颜色。
 
+```swift
+// Palette
+Image(systemName: "thermometer.sun.fill")
+    .foregroundStyle(.gray, .cyan, .teal)
+```
+
+![Palette](images/Palette.png)
+
 #### 多色模式 Muticolor
 
 在 SF Symbols 中，有许多符号的意象在现实生活中已经深入人心，比如：太阳应该是橙色的，警告应该是黄色的，叶子应该是绿色的的等等。所以 SF Symbols 也提供了与现实世界色彩相契合的颜色模式：多色渲染模式。当你使用多色模式的时候，就能看到预设的橙色太阳符号，红色的闹铃符号，而你不需要指定任何颜色。
+
+```swift
+// Muticolor
+Image(systemName: "thermometer.sun.fill")
+    .symbolRenderingMode(.multicolor)
+```
+
+![Muticolor](images/Muticolor.png)
 
 #### 自动渲染模式 Automatic
 
 谈论完了四种渲染模式，可以发现每次设置 symbol 的渲染模式其实也是一件费心的事情。为了解决这个问题，每个 symbol 都有一个自动渲染模式，这意味着该符号在代码中使用时，假如你不去特意配置他的渲染模式，那么他将使用默认的渲染模式，例如 shareplay 这个符号将会使用分层模式作为默认表现。
 
 > 你可以在 SF Symbols App 中查询和预览到所有符号的默认渲染模式是什么。如果你想了解关于更多关于渲染模式的内容，可以看这篇 [WWDC 2021 内参：SF Symbols 使用指南](https://xiaozhuanlan.com/topic/9214865730)。
-
-```swift
-// Monochrome
-Image(systemName: "thermometer.sun.fill")
-    .foregroundStyle(.blue)
-
-// Hierarchical
-Image(systemName: "thermometer.sun.fill")
-    .foregroundStyle(.gray)
-    .symbolRenderingMode(.hierarchical)
-
-// Palette
-Image(systemName: "thermometer.sun.fill")
-    .foregroundStyle(.gray, .cyan, .teal)
-
-// Muticolor
-Image(systemName: "thermometer.sun.fill")
-    .symbolRenderingMode(.multicolor)
-```
 
 ### 可变颜色
 
@@ -102,6 +126,12 @@ Image(systemName: "thermometer.sun.fill")
 在代码中，我们只需要在初始化 symbol 时增加一个 `Double` 类型的 `variableValue` 参数，就可以实现可变颜色在不同程度下的不同形态。值得注意的是，假如你的可变颜色（例如上图 Wi-Fi 符号）可变部分有三层，那么这个 `variableValue` 的判定将会三等分：在 0% 时将不高亮信号，在 0%～33% 时，将高亮一格信号，在 34%～67 % 时，将高亮 2 格信号，在 68% 以上时，将会显示满格信号。值得注意的是，可变颜色的可变部分是利用不透明度来实现的，当可变颜色和不同的渲染模式结合后，也会有很好的效果。
 
 ```swift
+// SwiftUI
+Image(systemName: "wifi", variableValue: 0.2)
+Image(systemName: "wifi", variableValue: 0.5)
+Image(systemName: "wifi", variableValue: 0.8)
+
+// AppKit
 let img = NSImage(symbolName: "wifi", variableValue: 0.2)
 ```
 
@@ -109,7 +139,7 @@ let img = NSImage(symbolName: "wifi", variableValue: 0.2)
 
 但仅仅通过 value 来控制 symbol 的可变颜色形态，并不能让我们很方便的展示出如上图这样的动态效果，但是今年推出的 SF Symbols 动画效果完美的解决了这一点，也让可变颜色这个功能变得更加方便实用，我们会在后文中看到详细的动画使用方法。
 
-> 如果你想了解关于更多关于可变颜色的内容，[WWDC 2022 内参：SF Symbols 4 使用指南](https://xiaozhuanlan.com/topic/8712590364)
+> 如果你想了解关于更多关于可变颜色的内容，可以看这篇 [WWDC 2022 内参：SF Symbols 4 使用指南](https://xiaozhuanlan.com/topic/8712590364)。
 
 ### SF Symbols 新特性：Animation
 
@@ -170,7 +200,7 @@ Image(systemName: "folder.badge.plus")
 
 没错！我们也可以为有可变颜色特性的符号做动画，而且动画顺序将会遵循可变颜色的层级顺序来实现，我们系统中的 Wi-Fi 和手机上的信号就用了这种动画。要注意的是，在可变颜色中，我们可以设置部分图层完全不参与可变颜色的变化，那么在可变颜色动画中，这部分图层也完全不会参与动画。另外，为没有可变颜色特性的符号做可变颜色动画时将不会有动画效果。
 
-> 如果你想了解更多关于可变颜色符号的信息，或者想知道如何制作带可变颜色特性的自定义符号，请看往年的这篇内参。
+> 如果你想知道如何制作带可变颜色特性的自定义符号，请看往年的这篇内参 [WWDC 2022 内参：SF Symbols 4 使用指南](https://xiaozhuanlan.com/topic/8712590364)。
 
 Variable Color 的动画比较特别，除了可以选择按图层动画或者整体动画之外，他还可以选择动画过程中是否要把图层隐藏、动画模式是累加还是迭代、一次动画结束之后要不要反向再做一次动画等。这些动画都可以在 SF Symbols App 中任意组合预览。
 

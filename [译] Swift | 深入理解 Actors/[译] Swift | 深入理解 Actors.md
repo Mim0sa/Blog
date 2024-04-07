@@ -1,6 +1,6 @@
 # [译] Swift | 深入理解 Actors
 
-## 要学习原理，不要死记硬背
+> 要学习原理，不要死记硬背
 
 我是一个喜欢理解某个概念内部是如何运作的人，如果我不掌握其潜在的机制，关于一个概念的一切都会显得不清楚，感觉像是死记硬背而不是真正的理解。因此，我深入研究了几个关键的 Swift 概念：actors、async/await、structured concurrency 和 AsyncSequence。为了使这些概念更容易理解，我将使用实际现实生活中的例子来解释每个概念。**现在让我们来谈谈 Actors**。
 
@@ -133,14 +133,12 @@ let manager = TransactionManager(account: account)
 
 // 使用 TransactionManager 执行提款操作
 Task {
-	// cross-actor reference
-	await manager.performWithdrawal(amount: 10)
+	await manager.performWithdrawal(amount: 10) // cross-actor reference
 }
 
 // 在另一个 Actor 执行提款操作
 Task {
-	// cross-actor reference
-	await myAccount.withdraw(amount: 5)
+	await myAccount.withdraw(amount: 5) // cross-actor reference
 }
 ```
 

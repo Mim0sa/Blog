@@ -165,7 +165,7 @@ SF Symbols 在这两年的更新中获得了动画的功能，这是一种给你
 
 其中，`Wiggle`、`Rotate` 和 `Breathe` 是今年新增的动画，`Replace` 和 `Variable Color` 在今年也有更新，具体的内容会在后文详细讲解。
 
-接下来我会通过代码来展示每个动画的运作机制和特点，在这之前，我们可以先打开 SF Symbols App。这个 App 中有所有符号的所有动画的预览，就在每个符号右侧边栏第三个 segment 上，并且你也可以通过调节选项来预览不同的动画效果组合，并且还可以在右侧直接复制你调整好的动画代码。
+接下来我会通过代码来展示每个动画的运作机制和特点，在这之前，我们可以先打开 SF Symbols App，你可以在这里看到所有符号的所有动画的预览，就在每个符号右侧边栏第三个 segment 上，并且你也可以通过调节选项来预览不同的动画效果组合，还可以在右侧直接复制你调整好的动画代码。
 
 在代码中使用动画非常简单，不管是在 SwiftUI 还是在 UIKit、AppKit 中，所有的动画选项都是代码链起来的，不含字符串。所有的动画效果，在 Api 中我们称之为 `SymbolEffect`。
 
@@ -173,9 +173,9 @@ SF Symbols 在这两年的更新中获得了动画的功能，这是一种给你
 
 #### Bounce
 
-Bounce 是一个非常有动感的动画，我们常常在强调某个区域或者按钮的时候用到这个效果，Bounce 动画默认会将各个图层单独在不同时间段进行动画，会有一种弹跳的动感，你还可以选择弹跳是向上弹跳还是向下弹跳。
+`Bounce` 是一个非常有动感的动画，我们常常在强调某个区域或者按钮的时候用到这个效果，`Bounce` 动画默认会将各个图层单独在不同时间段进行动画，会有一种弹跳的动感，你还可以选择弹跳是向上弹跳还是向下弹跳。
 
-需要注意的是，如果你想要整个符号所有图层同时进行动画，需要在代码中使用 `.wholeSymbol` 特别指定一下，同理，接下来的要介绍的所有动画（除了 Variable Color 动画）也都是如此，后文就不再单独介绍这个特性了。
+需要注意的是，如果你想要整个符号所有图层同时进行动画，需要在代码中使用 `.wholeSymbol` 特别指定一下，同理，接下来的要介绍的所有动画（除了 `Variable Color` 动画）也都是如此，后文就不再单独介绍这个特性了。
 
 ```swift
 // SwiftUI
@@ -195,7 +195,7 @@ imgView.addSymbolEffect(.bounce.up)
 
 #### Scale
 
-Scale 在动画效果上和 Bounce 是相似的，但是他更多的是用在提醒用户某个区域正处于一个特殊状态，例如在 macOS 上，我们的鼠标经过了某个按钮，我们可以为该按钮提供一个 Scale 动画并保持住 Scale 状态以提醒用户：这里是可以点击的并且你的指针已经在这个按钮上了。
+`Scale` 在动画效果上和 `Bounce` 是相似的，但是他更多的是用在提醒用户某个区域正处于一个特殊状态，例如在 macOS 上，我们的鼠标经过了某个按钮，我们可以为该按钮提供一个 `Scale` 动画并保持住 `Scale` 状态以提醒用户：这里是可以点击的并且你的指针已经在这个按钮上了。
 
 ```swift
 Image(systemName: "folder.badge.plus")
@@ -208,7 +208,7 @@ isActive.toggle()
 
 #### Wiggle
 
-Wiggle 是今年新推出的动画，它可以让符号从以任何角度做一个扭动的效果。我们可以在需要用户特别注意的地方使用这个动画，暗示或提示用户下一步操作的位置。你可以选择：上下左右、顺逆时针或者用数字指定的角度来掌控扭动的方向，如果你不指定方向，每个符号自身也有一个默认的方向。
+`Wiggle` 是今年新推出的动画，它可以让符号从以任何角度做一个扭动的效果。我们可以在需要用户特别注意的地方使用这个动画，暗示或提示用户下一步操作的位置。你可以选择：上、下、左、右、顺/逆时针或者用数字指定的角度来掌控扭动的方向。如果你不指定方向，每个符号自身也有一个默认的方向。
 
 ```swift
 Image(systemName: "arrow.right.circle")
@@ -223,12 +223,11 @@ Image(systemName: "iphone.gen3.radiowaves.left.and.right")
 
 #### Rotate
 
-Rotate 也是今年新推出的动画，它可以让符号旋转。这个动画可以运用在等待或者表示在过程中的情况。旋转的方向我们可以选择顺时针、逆时针，也可以通过调整这个动画的 repeat behavior 来实现连续的旋转。
+`Rotate` 也是今年新推出的动画，它可以让符号旋转。这个动画可以运用在等待或者表示在过程中的情况。旋转的方向我们可以选择顺时针、逆时针，也可以通过调整这个动画的 repeat behavior 来实现连续的旋转。
 
 ```swift
 Image(systemName: "fan.desk")
     .symbolEffect(.rotate.clockwise, options: .repeat(.periodic(delay: 0)))
-
 Image(systemName: "fan.desk")
     .symbolEffect(.rotate.counterClockwise, options: .repeat(.continuous))
 ```
@@ -248,23 +247,30 @@ Image(systemName: "fan.desk")
 ```swift
 Image(systemName: "rainbow")
     .symbolEffect(.variableColor.cumulative.dimInactiveLayers.reversing)
-
 Image(systemName: "rainbow")
     .symbolEffect(.variableColor.iterative.hideInactiveLayers.nonReversing)
 ```
 
 ![ShowVariableColorOptions](images/VariableColorAnimation.gif)
 
-另外，在这次更新后 `Variable Color` 的 loop 动画，修复了之前的头尾衔接时的卡顿，会比之前更加顺畅。
+另外在这次更新后，`Variable Color` 的动画分为 open loop 和 closed loop，对应下图左和右，在 closed loop 的符号执行动画时，动画执行完一圈之后不会有短暂停止，会无缝衔接下一圈动画。后文也会提到在自定义符号时，可以修改符号的 loop 类型。
+
+```swift
+Image(systemName: "waveform")
+    .symbolEffect(.variableColor.iterative, options: .repeat(.continuous))
+Image(systemName: "progress.indicator")
+    .symbolEffect(.variableColor.iterative, options: .repeat(.continuous))
+```
+
+![VariableColorLoopAnimation](images/VariableColorLoopAnimation.gif)
 
 #### Pulse
 
-Pulse 是一种闪烁效果，可以用来表示一种正在进行中的状态，例如我们下左图这个符号可以用来表示正在分享屏幕。要注意的是，和 Rotate 一样，该动画默认来说会按图层执行动画，有的部分符号预设了需要强调闪烁的部分（如下左图），所以在执行动画时，会有部分图层不闪烁。
+`Pulse` 是一种闪烁效果，可以用来表示一种正在进行中的状态，例如我们下左图这个符号可以用来表示正在分享屏幕。要注意的是，和 Rotate 一样，该动画默认来说会按图层执行动画，有的部分符号预设了需要强调闪烁的部分（如下左图），所以在执行动画时，会有部分图层不闪烁。
 
 ```swift
 Image(systemName: "rectangle.inset.filled.and.person.filled")
     .symbolEffect(.pulse)
-
 Image(systemName: "globe")
     .symbolEffect(.pulse)
 ```
@@ -273,12 +279,11 @@ Image(systemName: "globe")
 
 #### Breathe
 
-Breathe 是一种和 Pulse 有一些类似的动画，更适合用于更活泼、更有生命力的场景。除了像 Pulse 一样会按照图层闪烁之外，Breathe 还会像 Bounce 一样依照图层缓慢移动。你可以手动更改该符号在呼吸时需要不要闪烁。
+`Breathe` 是一种和 `Pulse` 有一些类似的动画，更适合用于更活泼、更有生命力的场景。除了像 `Pulse` 一样会按照图层闪烁之外，`Breathe` 还会像 `Bounce` 一样依照图层缓慢移动。你可以手动更改该符号在呼吸时需要不要闪烁。
 
 ```swift
 Image(systemName: "leaf")
     .symbolEffect(.breathe.plain)
-
 Image(systemName: "lungs")
     .symbolEffect(.breathe)
 ```
@@ -291,7 +296,7 @@ Image(systemName: "lungs")
 
 #### Replace
 
-Replace 是一种替换符号的方案，在你需要给按钮替换或者更新符号时常常用到。他是一种 `.contentTransition`，你有三种动画 Direction 可以选择：`.upUp`，`.offUp`，`.downUp`，对应符号淡入淡出的形式。如果你选择的两个符号正好是符合 Magic Replace 要求的，例如下图中的 `video.fill` 和 `video.slash.fill` ，这两个符号的差别只有一条 slash 线，那么系统会自动使用 `MagicReplace` 动画，使动画看起来更加流畅。
+`Replace` 是一种替换符号的方案，在你需要给按钮替换或者更新符号时常常用到。他是一种 `.contentTransition`，你有三种动画 Direction 可以选择：`.upUp`，`.offUp`，`.downUp`，对应符号淡入淡出的形式。如果你选择的两个符号正好是符合 `MagicReplace` 要求的，例如下图中的 `video.fill` 和 `video.slash.fill` ，这两个符号的差别只有一条 slash 线，那么系统会自动使用 `MagicReplace` 动画，使动画看起来更加流畅。
 
 当你使用的两个符号只有某一部分不同，或者说你使用的两个符号都是从某个基础符号演变而来的时候，你就可以尝试使用 `MagicReplace`，这个动画不会使原有符号完全消失，而是将两个符号的相同的部分保留，进行平移，而对不同的部分做定制的动画。如果你熟悉 Keynote 的话，这个效果就像 Keynote 里面的[神奇移动效果](https://education.apple.com/learning-center/T024609A-zh_CN)。
 
@@ -301,7 +306,6 @@ Replace 是一种替换符号的方案，在你需要给按钮替换或者更新
 // SwiftUI
 Image(systemName: isActive ? "figure.stand" : "figure.walk")
     .contentTransition(.symbolEffect(.replace.downUp))
-
 Image(systemName: isActive ? "video.fill" : "video.slash.fill")
     .contentTransition(.symbolEffect(.replace)) // MagicReplace
 
@@ -315,7 +319,7 @@ imgView.setSymbolImage(img, contentTransition: .replace.upUp)
 
 #### Appear / Disappear
 
-这里我们将 Appear 和 Disappear 放在一起说，他们两个的动画效果很相似，一个是出现，另一个是消失，经常用在符号需要出现和消失的场景中。
+这里我们将 `Appear` 和 `Disappear` 放在一起说，他们两个的动画效果很相似，一个是出现，另一个是消失，经常用在符号需要出现和消失的场景中。
 
 ![Appear&Disappear](images/DisAppearAnimation2.gif)
 
@@ -323,7 +327,7 @@ imgView.setSymbolImage(img, contentTransition: .replace.upUp)
 
 ![2Kinds](images/2Kinds.gif)
 
-这两种效果从逻辑上来说都是合理的，但面对不同的需求我们可能需要选择不同的实现方式来达到效果。我们先来看一下不会影响原有的布局的 Appear / Disappear 是如何实现的：我们通过 symbolEffect 效果来实现一个符号的出现和消失，他可以由一个值的变动来进行触发，他是一种在自己控件内进行画面更新的操作，不影响这个控件之外的内容。
+这两种效果从逻辑上来说都是合理的，但面对不同的需求我们可能需要选择不同的实现方式来达到效果。我们先来看一下不会影响原有的布局的 `Appear` / `Disappear` 是如何实现的：我们通过 `.symbolEffect` 效果来实现一个符号的出现和消失，他可以由一个值的变动来进行触发，他是一种在自己控件内进行画面更新的操作，不影响这个控件之外的内容。
 
 ```swift
 // SwiftUI
@@ -419,16 +423,90 @@ imgView.removeSymbolEffect(ofType: .variableColor)
 
 当我们觉得系统提供的 6000+ 个 symbols 不能满足我们需求的时候，我们也可以自己绘制属于自己的 symbol，或是在系统 symbol 的基础上进行修改，导入到 SF Symbols App 中，通过一些简单的调整渲染模式的预设颜色、调整动画的图层等，就可以导出到我们的 app 中使用，更多的定制 symbols 的基础介绍可以在 [WWDC 21 内参：定制属于你的 Symbols](https://xiaozhuanlan.com/topic/4807632591) 中详细了解。
 
-那在今年引入了新动画之后，我们也能够在定制符号的同时，通过调整图层相关信息去微调符号动画的具体表现。举一个调整自定义符号的 `Rotate` 动画的例子：
+那在今年引入了新动画之后，我们也能够在定制符号的同时，通过调整图层相关信息去微调符号动画的具体表现。比如我们可以在定制符号的同时修改其 `Rotate`、`Wiggle` 动画的默认方向、`Variable Color` 动画的执行方向和 loop 类型。
 
+![ModifyDirections](images/ModifyDirections.png)
 
+接下来举一个调整自定义符号的 `Rotate` 动画的例子：
+
+### 调整自定义符号的 Rotate 动画
+
+我对系统的 `thermometer.sun.fill` 温度计图标的旋转效果不是很满意，目前的默认动画是整个温度计都在旋转，我想对其进行一些调整。
+
+![WholeRotate](images/WholeRotate.gif)
+
+我可以打开 SF Symbols App，搜索 thermometer.sun.fill 找到温度计图标，右键选择「复制为一个自定符号」。
+
+![Duplicate](images/Duplicate.png)
+
+在自定符号库中找到我们刚才添加的温度计符号，记得打开画廊浏览模式，在右侧面板中选择第三个 segment，我们可以看到这个符号已经被分成了四个图层，其中三个图层已经合成了一个 Group。
+
+![Gallery](images/Gallery.png)
+
+仔细观察最下面的那个图层，也就是太阳的部分，你会发现系统隐藏了太阳的部分光点，只露出了 4 颗光点，我们在这里打开这个图层，将太阳的其余光点都点亮。
+
+![LightUp](images/LightUp.gif)
+
+接下来，我们手动标记太阳这一层为「Can Rotate」。
+
+![CanRotate](images/CanRotate.png)
+
+接下来设置动画预设为 `Rotate`，并且选择 `byLayer`，点击 Preview，就可以预览到我们新设置的旋转动画了。
+
+![AnchorWrong](images/AnchorWrong.gif)
+
+现在太阳是以整个符号的中心作为锚点进行旋转动画的，这显然是不合适的，我们可以打开右上角的调整锚点和辅助线，将符号的旋转锚点进行拖动调整，这样就大功告成了，我可以将它导入到我的 app 中，当我对他执行旋转动画时，默认情况下，旋转的只有太阳，而不是整个符号都旋转。
+
+![AdjustAnchor](images/AdjustAnchor.gif)
+
+### 其他例子
+
+在往年的文章中，也有一些定制 Symbols 的例子供参考：
+
+* 利用可变模版定制符号 - [WWDC 2021 内参：定制属于你的 Symbols](https://xiaozhuanlan.com/topic/4807632591) 
+
+* 制作和调整可变颜色 - [WWDC 2022 内参：SF Symbols 4 使用指南](https://xiaozhuanlan.com/topic/8712590364)
+
+* 给符号图层分组和标记 - [WWDC 2023 内参：SF Symbols 5 使用指南](https://xiaozhuanlan.com/topic/6438257091)
+
+## 扩展
+
+### 符号变体
+
+对于某些符号来说，有多种表现形式，我们以 `"heart"` 这个符号为例子，他有许多种变体：
+
+![Variants](images/Variants.png)
+
+如果我们想要使用 `heart.circle.fill` 这个符号，除了通过字符串拼接名称的方式，我们还可以通过 `imageVariant` 来实现，这种实现方式有助于在代码中统一符号的风格。
+
+```swift
+Label("Heart", systemImage: "heart")
+    .symbolVarient(.circle.fill)
+
+let imageView = UIImageView(image: UIImage(systemName: "heart"))
+imageView.imageVariant = .circle.fill
+```
+
+但其实在很多情况下，显示符号的视图会确定是否使用轮廓或填充，因此你无需指定变体。例如 iOS 标签页栏倾向于采用填充变体，而导航栏则采用轮廓变体，又比如 iOS 标签页倾向于采用填充变体，而 macOS 标签页更倾向于线性符号。
+
+### 本地化
+
+从 SF Symbols 3 开始，许多符号为特定语言和书写系统提供了很多本地化变体，当设备语言更改时，特定于语言和文字的变体会自动随之变化。
+
+![Localized](images/Localized.png)
 
 ### Symbol Components
 
+SF Symbols 在定制化方面还有一个强大功能功能，那就是 Symbol Components，这个功能可以让你的自定义符号，可以以各种你熟悉的形态加入到你的 app 中，来适配 MacOS、iOS 以及你所需要的界面风格。你通过这个方式生成的新符号，系统会自动地帮你设置好需要 Erase 的图层，同时在所有的动画效果、渲染模式、字重和比例下运作良好，非常方便。同时你需要注意的是，通过这个方式生成的符号，不可以再手动的调整图层以及更改动画设置了。我猜测，通过这种方式生成的符号，在未来的更新中会自动附带 `replace` 动画下的 `MagicReplace` 的效果。
+
 ![Component](images/Component.png)
 
-SF Symbols 在定制化方面还有一个强大功能功能，那就是 Symbol Components，这个功能可以让你的自定义符号，可以以各种你熟悉的形态加入到你的 app 中，来适配 MacOS、iOS 以及你所需要的界面风格。你通过这个方式生成的新符号，系统会自动地帮你设置好需要 Erase 的图层，同时在所有的动画效果、渲染模式、字重和比例下运作良好，非常方便。同时你需要注意的是，通过这个方式生成的符号，不可以再手动的调整图层以及更改动画设置了。我猜测，通过这种方式生成的符号，再之后的更新中会自动附带 `replace` 动画下的 `MagicReplace` 的效果。
+### 翻译符号🎉
+
+在 WWDC 24 中，官方推出了全新的 Translation API，具体见 [Session 10117: Meet the Translation API](https://developer.apple.com/videos/play/wwdc2024/10117/)，同步在 SF Symbols 6 中也新增了 `translate` 符号以供使用。
+
+![translate](images/translate.png)
 
 ## 总结
 
-从 SF Symbols 的特性和优点我们可以看到，它的出现解决符号与文本之间的协调性问题，在保证了本地化、无障碍化的基础上，Apple 一直在实用性、易用度以及多样性上面给 SF Symbols 加码，今年新推出的动画比起往年的更新，更加吸引人们的眼球了，目前 SF Symbols 能覆盖的应用场景也是越来越多，目前有了 5000+ 的符号可以使用，相信在未来还会有更多、以及更多的新特性、功能给开发者使用。SF Symbols 在表现能力上，在今年都又获得了巨大的的提升，让人惊艳，随着 SF Symbols 的继续发展，我相信对于很多开发者来说，是一个非常好的符号工具🥳🥳🥳。
+从 SF Symbols 的特性和优点我们可以看到，它的出现解决符号与文本之间的协调性问题，在保证了本地化、无障碍化的基础上，Apple 一直在实用性、易用度以及多样性上面给 SF Symbols 加码，目前 SF Symbols 能覆盖的应用场景也是越来越多，目前有了 6000+ 的符号可以使用，相信在未来还会有更多、以及更多的新特性、功能给开发者使用。SF Symbols 在表现能力上，在今年都又获得了巨大的的提升，让人惊艳，随着 SF Symbols 的继续发展，我相信对于很多开发者来说，是一个非常好的符号工具🥳🥳🥳。//

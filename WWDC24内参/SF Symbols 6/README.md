@@ -2,9 +2,9 @@
 session_ids: [10188]
 ---
 
-# WWDC23 10188 - SF Symbols 6 使用指南
+# WWDC24 10188 - SF Symbols 6 使用指南
 
-> 摘要：为了更方便没有 SF Symbols 经验的读者理解，也将往年的 SF Symbols 相关内容归纳整理。本文从 SF Symbols 的特性切入，讨论 SF Symbols 这款由系统字体支持的符号库有哪些特点以及该如何使用。在这次 WWDC 2024 中，除了符号的数量增加到了 6000+ 之外，还新增了一些能让符号们更加活泼的动画效果，同时提升整体使用体验，让 SF Symbols 这把利器变得又又又更加趁手和锋利了。
+> 摘要：为了更方便没有 SF Symbols 经验的读者理解，也将往年的 SF Symbols 相关内容归纳整理。本文从 SF Symbols 的特性切入，讨论 SF Symbols 这款由系统字体支持的符号库有哪些特点以及该如何使用。在这次 WWDC 2024 更新中，除了符号的数量增加到了 6000+ 之外，还新增了一些能让符号们更加活泼的动画效果，同时提升整体使用体验，给界面带来了更多活力和想象力，让 SF Symbols 这把利器变得又又又更加趁手和锋利了。
 
 本文基于 WWDC 2024 [Session 10188](https://developer.apple.com/videos/play/wwdc2024/10188/) 梳理。
 
@@ -17,7 +17,7 @@ session_ids: [10188]
 > 戴铭，极客时间《iOS 开发高手课》和纸书《跟戴铭学 iOS 编程》作者。
 >
 
-![WWDC23History](images/WWDC23History.png)
+![WWDC24History](images/WWDC24History.png)
 
 ## 什么是 SF Symbols
 

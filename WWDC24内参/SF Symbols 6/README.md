@@ -4,7 +4,7 @@ session_ids: [10188]
 
 # WWDC23 10188 - SF Symbols 6 使用指南
 
-> 摘要：为了更方便没有 SF Symbols 经验的读者理解，也将往年的 SF Symbols 相关内容归纳整理。本文从 SF Symbols 的特性切入，讨论 SF Symbols 这款由系统字体支持的符号库有哪些特点以及该如何使用。在这次 WWDC 2024 中，除了符号的数量增加到了 6000+ 之外，还新增了一些能让符号们更加活泼的动画效果，让 SF Symbols 这把利器变得又又又更加趁手和锋利了。
+> 摘要：为了更方便没有 SF Symbols 经验的读者理解，也将往年的 SF Symbols 相关内容归纳整理。本文从 SF Symbols 的特性切入，讨论 SF Symbols 这款由系统字体支持的符号库有哪些特点以及该如何使用。在这次 WWDC 2024 中，除了符号的数量增加到了 6000+ 之外，还新增了一些能让符号们更加活泼的动画效果，同时提升整体使用体验，让 SF Symbols 这把利器变得又又又更加趁手和锋利了。
 
 本文基于 WWDC 2024 [Session 10188](https://developer.apple.com/videos/play/wwdc2024/10188/) 梳理。
 
@@ -17,7 +17,7 @@ session_ids: [10188]
 > 戴铭，极客时间《iOS 开发高手课》和纸书《跟戴铭学 iOS 编程》作者。
 >
 
-![WWDC23History](images/WWDC23HistoryF.png)
+![WWDC23History](images/WWDC23History.png)
 
 ## 什么是 SF Symbols
 
@@ -37,7 +37,7 @@ session_ids: [10188]
 
 ### SF Symbols App
 
-在开始介绍如何使用 SF Symbols 之前，我们可以先下载来自 Apple 官方的 SF Symbols 6 App，这款 App 中支持搜索所有的 SF Symbols，并且记录了每个符号的名称，支持的渲染模式，可变符号的分层预览，不同语言下的变体，不同版本下可能出现的不同的名称。可以实时预览不同渲染模式下不同强调色的不同效果，同时也可以预览每个符号能实现的所有种类的动画效果！你可以在[这里](https://developer.apple.com/sf-symbols/)下载 SF Symbols 6 App。
+在开始介绍如何使用 SF Symbols 之前，我们可以先下载来自 Apple 官方的 SF Symbols 6 App，这款 App 中支持搜索所有的 SF Symbols，并且记录了每个符号的名称，支持的渲染模式，可变符号的分层预览，不同语言下的变体，不同版本下可能出现的不同的名称。可以实时预览不同渲染模式下不同强调色的不同效果，同时也可以预览每个符号能实现的所有种类的动画效果！你可以在[这里](https://developer.apple.com/sf-symbols/)下载 SF Symbols 6 App。在今年，更新了许多自动驾驶、动作、本地化相关的符号。
 
 ![SFSymbolApp](images/SFSymbolApp6.png)
 
@@ -64,9 +64,14 @@ Image(systemName: "thermometer.sun.fill")
 在 iOS 15 / macOS 11 之前，单色模式是唯一的渲染模式，顾名思义，单色模式会让符号有一个单一的颜色。要设置单色模式的符号，我们只需要直接设置视图的 tint 等属性就可以完成。
 
 ```swift
-// Monochrome
+// SwiftUI
 Image(systemName: "battery.100percent.bolt")
     .foregroundStyle(.yellow)
+
+// UIKit
+let image = UIImage(systemName: "battery.100percent.bolt")
+imageView.image = image
+imageView.tintColor = .yellow
 ```
 
 ![Monochrome](images/Monochrome.png)
@@ -78,10 +83,16 @@ Image(systemName: "battery.100percent.bolt")
 分层模式和单色模式一样，可以设置一个颜色。但是分层模式会以该颜色为基础，生成降低主颜色的不透明度而衍生出来的其他颜色（如下图中的**电池符号**看起来是由三种黄色组合而成）。在这个模式中，层级结构很重要，如果缺少某一个层级，则相关的派生颜色将不会被使用。
 
 ```swift
-// Hierarchical
+// SwiftUI
 Image(systemName: "battery.100percent.bolt")
     .foregroundStyle(.yellow)
     .symbolRenderingMode(.hierarchical)
+
+// UIKit
+let image = UIImage(systemName: "battery.100percent.bolt")
+imageView.image = image
+let config = UIImage.SymbolConfiguration(hierarchicalColor: .yellow)
+imageView.preferredSymbolConfiguration = config
 ```
 
 ![Hierarchical](images/Hierarchical.png)
@@ -91,10 +102,16 @@ Image(systemName: "battery.100percent.bolt")
 调色盘模式和分层模式很像，和分层模式一样是，调色盘模式也会对符号的各个层级进行上色。而不同的是，调色盘模式允许你自由的分别设置各个层级的颜色。
 
 ```swift
-// Palette
+// SwiftUI
 Image(systemName: "battery.100percent.bolt")
     .foregroundStyle(.red, .orange, .yellow)
     .symbolRenderingMode(.palette)
+
+// UIKit
+let image = UIImage(systemName: "battery.100percent.bolt")
+imageView.image = image
+let config = UIImage.SymbolConfiguration(paletteColors: [.red, .orange, .yellow])
+imgView.preferredSymbolConfiguration = config
 ```
 
 ![Palette](images/Palette.png)
@@ -104,9 +121,14 @@ Image(systemName: "battery.100percent.bolt")
 在 SF Symbols 中，有许多符号的意象在现实生活中已经深入人心，比如：挂断电话的符号应该是红色的，有关警告的符号应该是黄色的，彩虹符号🌈应该是彩色的，等等。所以 SF Symbols 也提供了与现实世界色彩相契合的颜色模式：多色渲染模式。当你使用多色模式的时候，就能看到预设的橙色太阳符号，红色删除符号，而你不需要指定任何颜色。
 
 ```swift
-// Muticolor
+// SwiftUI
 Image(systemName: "battery.100percent.bolt")
     .symbolRenderingMode(.multicolor)
+
+// UIKit
+let image = UIImage(systemName: "battery.100percent.bolt")
+imageView.image = image
+imgView.preferredSymbolConfiguration = .preferringMulticolor()
 ```
 
 ![Muticolor](images/Muticolor.png)
@@ -136,8 +158,6 @@ Image(systemName: "wifi", variableValue: 0.8)
 // AppKit
 let img = NSImage(symbolName: "wifi", variableValue: 0.2)
 ```
-
-> 如果你想了解关于更多关于可变颜色的内容，可以看这篇 [WWDC 2022 内参：SF Symbols 4 使用指南](https://xiaozhuanlan.com/topic/8712590364)。
 
 ![ColoredVariableSymbols](images/ColoredVariableSymbols.gif)
 
@@ -187,7 +207,6 @@ Image(systemName: "checkmark.seal")
                   options: .repeat(.periodic(delay: 1)))
 
 // UIKit
-let imgView: UIImageView = ...
 imgView.addSymbolEffect(.bounce.up)
 ```
 
@@ -251,7 +270,7 @@ Image(systemName: "rainbow")
 
 ![ShowVariableColorOptions](images/VariableColorAnimation.gif)
 
-另外在这次更新后，`Variable Color` 的动画分为 open loop 和 closed loop，对应下图左和右，在 closed loop 的符号执行动画时，动画执行完一圈之后不会有短暂停止，会无缝衔接下一圈动画。后文也会提到在自定义符号时，可以修改符号的 loop 类型。
+另外在这次更新后，`Variable Color` 的动画分为 open loop 和 closed loop，对应下图左和右，closed loop 符号的头尾是相连的，现在当 closed loop 的符号执行动画时，动画执行完一圈之后不会有短暂停止，会无缝衔接下一圈动画。后文也会提到在自定义符号时，可以修改符号的 loop 类型。
 
 ```swift
 Image(systemName: "waveform")
@@ -304,16 +323,17 @@ Image(systemName: isActive ? "video.fill" : "video.slash.fill")
     .contentTransition(.symbolEffect(.replace)) // MagicReplace
 
 // UIKit
-let imgView: UIImageView = ...
-let img = UIImage(systemName: "video.fill")
-imgView.setSymbolImage(img, contentTransition: .replace.upUp)
+let image = UIImage(systemName: "video.slash.fill")
+imageView.setSymbolImage(img, contentTransition: .replace.downUp)
 ```
 
 ![Replace](images/ReplaceAnimation.gif)
 
 当你使用的两个符号只有某一部分不同，或者说你使用的两个符号都是从某个基础符号演变而来的时候，你就可以尝试使用 `MagicReplace`，这个动画不会使原有符号完全消失，而是将两个符号的相同的部分保留，进行平移，而对不同的部分做定制的动画。如果你熟悉 Keynote 的话，这个效果就像 Keynote 里面的[神奇移动效果](https://education.apple.com/learning-center/T024609A-zh_CN)。
 
-> 如果你正在使用自定义符号，同时想要使用带有 `MagicReplace` 的动画，需要重新导出符号至 Xcode 16
+另外要注意，符号的分层和调色盘渲染模式可能会导致 `MagicReplace` 失效。
+
+> 如果你正在使用自定义符号，同时想要使用带有 `MagicReplace` 的动画，需要从 SF Symbols 6 App 重新导出符号至 Xcode 16
 
 #### Appear / Disappear
 
@@ -337,10 +357,9 @@ HStack {
 }
 
 // UIKit
-let imgView: UIImageView = ...
-imgView.addSymbolEffect(.disappear)
+imageView.addSymbolEffect(.disappear)
 ...
-imgView.addSymbolEffect(.appear)  // Re-appear
+imageView.addSymbolEffect(.appear)  // Re-appear
 ```
 
 接下来我们来看一下会影响控件的布局的 Appear / Disappear 是如何实现的：你可以发现，其实这种消失和出现的动画，实际上是一种 Transition 的过程，当你执行完 disppear 时，你的控件应当是消失了，比如从屏幕上移除等。
@@ -361,10 +380,10 @@ withAnimation {
 }
 
 // UIKit
-let imgView = UIImageView()
-imgView.addSymbolEffect(.disappear) { context in
-    if let imgView = context.sender as? UIImageView, context.isFinished {
-        imgView.removeFromSuperview()
+let imageView = UIImageView()
+imageView.addSymbolEffect(.disappear) { context in
+    if let imageView = context.sender as? UIImageView, context.isFinished {
+        imageView.removeFromSuperview()
     }
 }
 ```
@@ -383,8 +402,7 @@ Image(systemName: "fan.desk")
     )
 
 // UIKit
-let imgView: UIImageView = ...
-imgView.addSymbolEffect(.bounce, option: .repeat(2))
+imageView.addSymbolEffect(.bounce, options: .repeat(.periodic(2)))
 ```
 
 那另一种更常见的情况是，我希望在代码中有一个变量来控制动画的状态，使动画可以通过代码来开启或者关闭。我们总结这种动画为 `Indefinite` 动画，在 iOS 18 中，除了 `Replace` 之外，所有动画都符合这个要求，遵循 `IndefiniteSymbolEffect` 协议。
@@ -401,10 +419,22 @@ Image(systemName: "fan.desk")
     )
 
 // UIKit
-let imgView: UIImageView = ...
-imgView.addSymbolEffect(.variableColor)
+imageView.addSymbolEffect(.variableColor)
 ...
-imgView.removeSymbolEffect(ofType: .variableColor)
+imageView.removeSymbolEffect(ofType: .variableColor)
+```
+
+无论是 `Discrete` 动画还是 `Indefinite` 动画，都可以用代码控制动画执行的频率。
+
+```swift
+// 执行一次
+options: .nonRepeating,
+// 执行 5 次，期间每次 delay 1 秒
+options: .repeat(.periodic(5, delay: 1)),
+// 连续执行 linear 动画
+options: .repeat(.continuous),
+// 调整速度
+options: .speed(1),
 ```
 
 还记得我们的 `Appear`、`Disappear` 动画有两种形式吗？上文提到的 `Indefinite` 动画中的 `Appear`、`Disappear` 是不影响控件之外、只在控件内部更新画面的那种形式。还有另一种 `Appear`、`Disappear` 动画，在执行过程中会影响到整体的布局，这种 Appear, Disappear 动画属于 `Transition` 类型，遵循 `TransitionSymbolEffect`。还剩下 `Repalce` 动画，单独属于 `Content Transition` 类型，遵循 `ContentTransitionSymbolEffect`。
@@ -453,7 +483,7 @@ imgView.removeSymbolEffect(ofType: .variableColor)
 
 ![AnchorWrong](images/AnchorWrong.gif)
 
-现在太阳是以整个符号的中心作为锚点进行旋转动画的，这显然是不合适的，我们可以打开右上角的调整锚点和辅助线，将符号的旋转锚点进行拖动调整，这样就大功告成了，我可以将它导入到我的 app 中，当我对这个新符号执行旋转动画时，默认情况下，旋转的只有太阳，而不是整个符号都旋转。
+现在太阳是以整个符号的中心作为锚点进行旋转动画的，这显然是不合适的，我们可以打开右上角的调整锚点和辅助线，将符号的旋转锚点进行拖动调整，同样像这样调整另外两种 scale 下的旋转锚点，就大功告成了。我可以将它导入到我的 app 中，当我对这个新符号执行旋转动画时，默认情况下，旋转的只有太阳，而不是整个符号都旋转。
 
 ![AdjustAnchor](images/AdjustAnchor.gif)
 
@@ -495,13 +525,13 @@ imageView.imageVariant = .circle.fill
 
 ### Symbol Components
 
-SF Symbols 在定制化方面还有一个强大功能功能，那就是 Symbol Components，这个功能可以让你的自定义符号，可以以各种你熟悉的形态加入到你的 app 中，来适配 MacOS、iOS 以及你所需要的界面风格。你通过这个方式生成的新符号，系统会自动地帮你设置好需要 Erase 的图层，同时在所有的动画效果、渲染模式、字重和比例下运作良好，非常方便。同时你需要注意的是，通过这个方式生成的符号，不可以再手动的调整图层以及更改动画设置了。另外我猜测😈，通过这种方式生成的符号，在未来的更新中会自动附带 `replace` 动画下的 `MagicReplace` 的效果。
+SF Symbols 在定制化方面还有一个强大功能功能，那就是 Symbol Components，这个功能可以让你的自定义符号，可以以各种你熟悉的形态加入到你的 app 中，来适配 MacOS、iOS 以及你所需要的界面风格。你通过这个方式生成的新符号，系统会自动地帮你设置好需要 Erase 的图层，同时在所有的动画效果、渲染模式、字重和比例下运作良好，非常方便。同时你需要注意的是，通过这个方式生成的符号，不可以再手动的调整图层以及更改动画设置了。通过这种方式生成的符号，会自动附带 `replace` 动画下的 `MagicReplace` 的效果。
 
 ![Component](images/Component.png)
 
-### 翻译符号🎉
+### 翻译符号
 
-在 WWDC 24 中，官方推出了全新的 Translation API，具体见 [Session 10117: Meet the Translation API](https://developer.apple.com/videos/play/wwdc2024/10117/)，同步在 SF Symbols 6 中也新增了 `translate` 符号以供使用。
+在 WWDC 24 中，官方推出了全新的 Translation API 🎉，具体见 [Session 10117: Meet the Translation API](https://developer.apple.com/videos/play/wwdc2024/10117/)，同步在 SF Symbols 6 中也新增了 `translate` 符号以供使用。
 
 ![translate](images/translate.png)
 

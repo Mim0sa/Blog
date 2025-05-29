@@ -7,6 +7,7 @@ struct MyBlog: Website {
     enum SectionID: String, WebsiteSectionID {
         // Add the sections that you want your website to contain here:
         case posts
+        case about
     }
 
     struct ItemMetadata: WebsiteItemMetadata {
@@ -15,11 +16,11 @@ struct MyBlog: Website {
 
     // Update these properties to configure your website:
     var url = URL(string: "https://your-website-url.com")!
-    var name = "MyBlog"
-    var description = "A description of MyBlog"
+    var name = "Mimosa's Blog"
+    var description = "A description of Mimosa's Blog"
     var language: Language { .english }
     var imagePath: Path? { nil }
 }
 
 // This will generate your website using the built-in Foundation theme:
-try MyBlog().publish(withTheme: .foundation)
+try MyBlog().publish(withTheme: .mimosa)

@@ -49,7 +49,9 @@ private struct FoundationHTMLFactory<Site: Website>: HTMLFactory {
                 SiteHeader(context: context, selectedSelectionID: section.id)
                 Wrapper {
                     H1(section.title)
-                    Wrapper(section.body)
+                    if section.id as! MyBlog.SectionID == .about {
+                        Wrapper(section.body)
+                    }
                     ItemList(items: section.items, site: context.site)
                 }
                 SiteFooter()
@@ -164,8 +166,10 @@ private struct SiteHeader<Site: Website>: Component {
     var body: Component {
         Header {
             Wrapper {
-                Link(context.site.name, url: "/")
-                    .class("site-name")
+                Image("../ImageMim0sasblogLogo.png")
+                    .class("headerLogo")
+//                Link(context.site.name, url: "/")
+//                    .class("site-name")
 
                 if Site.SectionID.allCases.count > 1 {
                     navigation
@@ -185,6 +189,7 @@ private struct SiteHeader<Site: Website>: Component {
                 .class(sectionID == selectedSelectionID ? "selected" : "")
             }
         }
+        .class("headerNavigationItem")
     }
 }
 

@@ -7,6 +7,7 @@ struct MyBlog: Website {
     enum SectionID: String, WebsiteSectionID {
         // Add the sections that you want your website to contain here:
         case posts
+        case archive
         case about
     }
 
@@ -19,7 +20,7 @@ struct MyBlog: Website {
     var name = "Mimosa's Blog"
     var description = "A description of Mimosa's Blog"
     var language: Language { .english }
-    var imagePath: Path? { nil }
+    var imagePath: Path? { Path("Image") }
 }
 
 // This will generate your website using the built-in Foundation theme:

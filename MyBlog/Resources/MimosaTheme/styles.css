@@ -35,15 +35,14 @@ body {
     width: 300px;
 }
 
-.headerNavigationItem {
-    font-size: 1.2em;
+.headerNavigation {
     text-align: right;
-    color: #8ee;
-    font-weight: 500;
+    color: #eee;
+    font-weight: 600;
 }
 
 header {
-    background-color: #111;
+    background-color: #090909;
 }
 
 header .wrapper {
@@ -68,12 +67,12 @@ nav {
 
 nav li {
     display: inline-block;
-    margin: 0 7px;
+    margin: 0 12px;
     line-height: 1.5em;
 }
 
 nav li a.selected {
-    text-decoration: underline;
+    color: #bee;
 }
 
 h1 {

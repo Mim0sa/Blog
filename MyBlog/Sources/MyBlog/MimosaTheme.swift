@@ -166,10 +166,10 @@ private struct SiteHeader<Site: Website>: Component {
     var body: Component {
         Header {
             Wrapper {
-                Image("../ImageMim0sasblogLogo.png")
-                    .class("headerLogo")
-//                Link(context.site.name, url: "/")
-//                    .class("site-name")
+                Link(url: "/") {
+                    Image("ImageMim0sasblogLogo.png")
+                        .class("headerLogo")
+                }
 
                 if Site.SectionID.allCases.count > 1 {
                     navigation
@@ -189,7 +189,7 @@ private struct SiteHeader<Site: Website>: Component {
                 .class(sectionID == selectedSelectionID ? "selected" : "")
             }
         }
-        .class("headerNavigationItem")
+        .class("headerNavigation")
     }
 }
 

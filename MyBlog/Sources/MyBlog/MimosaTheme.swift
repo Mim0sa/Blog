@@ -167,7 +167,7 @@ private struct SiteHeader<Site: Website>: Component {
         Header {
             Wrapper {
                 Link(url: "/") {
-                    Image("ImageMim0sasblogLogo.png")
+                    Image("Resources/Image/Mim0sasblogLogo.png")
                         .class("headerLogo")
                 }
 
